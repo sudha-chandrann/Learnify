@@ -12,3 +12,96 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+
+model Course {
+  id          String       @id @default(uuid())
+  userId      String
+  author      String
+  title       String       @db.Text
+  description String?      @db.Text
+  imageUrl    String?      @db.Text
+  price       Float        @default(0)
+  isPublished Boolean      @default(false)
+  categroyId  String?
+  createAt    DateTime     @default(now())
+  updateAt    DateTime     @updatedAt
+  attachments Attachment[]
+  chapters    Chapter[]
+  category    Category?    @relation(fields: [categroyId], references: [id])
+  purchases   Purchase[]
+
+  @@index([categroyId], map: "Course_categroyId_fkey")
+}
+
+
+model Category {
+  id      String   @id @default(uuid())
+  name    String   @unique
+  courses Course[]
+}
+
+model Attachment {
+  id       String   @id @default(uuid())
+  courseId String
+  url      String   @db.Text
+  name     String
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@index([courseId])
+}
+
+model Chapter {
+  id           String         @id @default(uuid())
+  title        String         @db.Text
+  description  String?        @db.Text
+  videoUrl     String?        @db.Text
+  position     Int
+  isPublished  Boolean        @default(false)
+  isFree       Boolean        @default(false)
+  courseId     String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  course       Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  muxData      MuxData?
+  userProgress UserProgress[]
+
+  @@index([courseId])
+}
+
+model MuxData {
+  id         String  @id @default(uuid())
+  chapterId  String  @unique
+  assetId   String
+  playbackId String?
+  chapter    Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+}
+
+model UserProgress {
+  id          String   @id @default(uuid())
+  userId      String
+  chapterId   String
+  isCompleted Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  chapter     Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, chapterId])
+  @@index([chapterId])
+}
+
+
+model Purchase {
+  id        String   @id @default(uuid())
+  userId    String
+  courseId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  price     Float
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@index([courseId])
+}
