@@ -113,7 +113,7 @@ export default async function Home() {
   return (
     <div className="min-h-screen font-sans bg-gray-50">
       {/* Navbar - with glass effect */}
-      <nav className="flex items-center justify-between w-full h-20 fixed top-0 left-0 z-50 px-6 md:px-12 bg-white/90 backdrop-blur-md shadow-sm">
+      <nav className="flex items-center justify-between w-full h-20 fixed top-0 left-0 z-50 px-3 sm:px-6 md:px-12 bg-white/90 backdrop-blur-md shadow-sm">
         <Logo/>
         <div className="flex items-center gap-4">
           <Link href="/sign-in">

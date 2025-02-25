@@ -12,9 +12,9 @@ function Logo() {
         alt="CampusPro Logo"
         width={50}
         height={50}
-        className="w-12 h-12"
+        className=" w-8 h-8 sm:w-12 sm:h-12 "
       />
-      <span className={`text-2xl font-extrabold ${playfair.className} text-sky-700`}>
+      <span className={` text-lg sm:text-2xl font-extrabold ${playfair.className} text-sky-700`}>
         Learnify
       </span>
     </div>
