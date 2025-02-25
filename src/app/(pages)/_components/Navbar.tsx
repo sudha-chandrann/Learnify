@@ -21,8 +21,7 @@ function Navbar() {
             <SheetContent side="left">
                 <SideBar/>
             </SheetContent>
-        </Sheet>
-        
+        </Sheet>     
        </div>
 
        <div className='ml-auto'>
