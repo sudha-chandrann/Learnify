@@ -4,6 +4,8 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import TitleForm from "./_components/TitleForm";
 import DescriptionForm from "./_components/DescriptionForm";
+import { IconBadge } from "@/components/customui/IconBadge";
+import { LayoutDashboard, ListChecks } from "lucide-react";
 
 
 
@@ -69,6 +71,7 @@ async function Page({ params }: { params: Promise<{ courseId: string }> }) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-10">
           <div className="space-y-4 w-full justify-items-center mb-6">
             <div className="flex items-center gap-x-2 w-full min-w-[320px] lg:w-4/5">
+            <IconBadge  icon={LayoutDashboard} />
               <h1 className="text-lg text-slate-600">Customize your course</h1>
             </div>
             <TitleForm
@@ -83,7 +86,7 @@ async function Page({ params }: { params: Promise<{ courseId: string }> }) {
           </div>
           <div className=" space-y-4 w-full justify-items-center mb-6">
             <div className="flex items-center gap-x-2 w-full lg:w-4/5 min-w-[320px]">
-              
+            <IconBadge  icon={ListChecks} />
               <h1 className="text-lg text-slate-600"> Course Chapters</h1>
             </div>
          
