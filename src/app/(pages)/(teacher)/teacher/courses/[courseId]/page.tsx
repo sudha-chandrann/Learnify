@@ -5,11 +5,10 @@ import { redirect } from "next/navigation";
 import TitleForm from "./_components/TitleForm";
 import DescriptionForm from "./_components/DescriptionForm";
 import { IconBadge } from "@/components/customui/IconBadge";
-import { LayoutDashboard, ListChecks } from "lucide-react";
+import { CircleDollarSign, LayoutDashboard, ListChecks } from "lucide-react";
 import ImageForm from "./_components/ImageForm";
 import CategoryForm from "./_components/CategoryForm";
-
-
+import PriceForm from "./_components/PriceForm";
 
 
 async function Page({ params }: { params: Promise<{ courseId: string }> }) {
@@ -107,7 +106,15 @@ async function Page({ params }: { params: Promise<{ courseId: string }> }) {
             <IconBadge  icon={ListChecks} />
               <h1 className="text-lg text-slate-600"> Course Chapters</h1>
             </div>
-         
+
+            <div className="flex items-center gap-x-2 w-full lg:w-4/5 min-w-[320px]">
+            <IconBadge  icon={CircleDollarSign} />
+              <h1 className="text-lg text-slate-600"> Sell Your Course</h1>
+            </div>
+            <PriceForm
+              initialData={{ price: course.price }}
+              courseId={courseId}
+            />
 
           </div>
         </div>
