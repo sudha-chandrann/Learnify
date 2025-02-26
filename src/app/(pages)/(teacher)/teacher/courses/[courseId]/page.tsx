@@ -10,6 +10,7 @@ import ImageForm from "./_components/ImageForm";
 import CategoryForm from "./_components/CategoryForm";
 import PriceForm from "./_components/PriceForm";
 import AttachmentForm from "./_components/AttachmentForm";
+import ChapterForm from "./_components/ChapterForm";
 
 async function Page({ params }: { params: Promise<{ courseId: string }> }) {
   const { userId } = await auth();
@@ -103,6 +104,7 @@ async function Page({ params }: { params: Promise<{ courseId: string }> }) {
               <IconBadge icon={ListChecks} />
               <h1 className="text-lg text-slate-600"> Course Chapters</h1>
             </div>
+            <ChapterForm courseId={courseId} initialData={course}/>
 
             <div className="flex items-center gap-x-2 w-full lg:w-4/5 min-w-[320px]">
               <IconBadge icon={CircleDollarSign} />
