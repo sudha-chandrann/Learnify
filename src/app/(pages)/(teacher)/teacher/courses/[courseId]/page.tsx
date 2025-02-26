@@ -6,6 +6,7 @@ import TitleForm from "./_components/TitleForm";
 import DescriptionForm from "./_components/DescriptionForm";
 import { IconBadge } from "@/components/customui/IconBadge";
 import { LayoutDashboard, ListChecks } from "lucide-react";
+import ImageForm from "./_components/ImageForm";
 
 
 
@@ -82,7 +83,10 @@ async function Page({ params }: { params: Promise<{ courseId: string }> }) {
               initialData={{ description: course.description || "" }}
               courseId={courseId}
             />
-
+           <ImageForm
+           initialData={{ imageUrl: course.imageUrl || "" }}
+           courseId={courseId}
+           />
 
           </div>
           <div className=" space-y-4 w-full justify-items-center mb-6">

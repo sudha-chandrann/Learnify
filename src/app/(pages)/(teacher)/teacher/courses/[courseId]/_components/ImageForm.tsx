@@ -1,12 +1,12 @@
 "use client";
 import React, { useState } from "react";
-import * as z from "zod";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { ImageIcon, Pencil, PlusCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import FileUploader from "@/components/customui/ImageUpload";
 
 interface CourseImageFormProps {
   initialData: {
@@ -15,9 +15,7 @@ interface CourseImageFormProps {
   courseId: string;
 }
 
-const formSchema = z.object({
-  imageUrl: z.string().min(1, { message: "Course Image is required" }),
-});
+
 
 function ImageForm({ initialData, courseId }: CourseImageFormProps) {
 
@@ -26,7 +24,9 @@ function ImageForm({ initialData, courseId }: CourseImageFormProps) {
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+
+
+  const onSubmit = async (values:{imageUrl:string}) => {
     try {
       setisLoading(true);
       await axios.patch(`/api/courses/${courseId}`, values);
@@ -46,7 +46,7 @@ function ImageForm({ initialData, courseId }: CourseImageFormProps) {
 
   return (
     <div className="w-full lg:w-4/5 min-w-[320px]  p-3 md:p-4  bg-slate-100 rounded-md">
-      <div className="font-medium flex items-center justify-between">
+      <div className="font-medium flex items-center justify-between mb-2">
         <span>Course Image</span>
         <Button variant="ghost" onClick={toggleEdit} disabled={isLoading}>
           {isEditing && <>Cancel</>}
@@ -77,14 +77,21 @@ function ImageForm({ initialData, courseId }: CourseImageFormProps) {
         </div>
       )}
       {!isEditing && !initialData.imageUrl && (
-        <div className="flex items-center shadow-md rounded-md justify-center w-full h-[100px]">
-          <ImageIcon />
-        </div>
+         <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-slate-300 rounded-lg bg-slate-50 h-[200px]">
+         <ImageIcon className="w-12 h-12 text-slate-400 mb-2" />
+         <p className="text-slate-500 text-center">No image uploaded yet</p>
+       </div>
       )}
 
       {isEditing && (
-        <div>
-
+        <div className="flex flex-col items-center justify-center  border-slate-300 rounded-lg h-[260px]">
+          <FileUploader  onChange={(info) => {
+              if (typeof info === "object" && "url" in info) {
+                onSubmit({ imageUrl: info.url });
+              } else {
+                console.error("Invalid info type:", info);
+              }
+            }} isImage={true}/>
           <div className="text-xs text-muted-foreground mt-4">
             16:9 aspect ratio recommended
           </div>
