@@ -35,7 +35,7 @@ function ChapterDescriptionForm({
 
   const { isSubmitting, isValid } = form.formState;
   const [isEditing, setIsEditing] = useState(false);
-
+  console.log(chapterId,courseId,isValid);
 
   const toggleEdit = () => setIsEditing((current) => !current);
 
