@@ -7,6 +7,7 @@ import DescriptionForm from "./_components/DescriptionForm";
 import { IconBadge } from "@/components/customui/IconBadge";
 import { LayoutDashboard, ListChecks } from "lucide-react";
 import ImageForm from "./_components/ImageForm";
+import CategoryForm from "./_components/CategoryForm";
 
 
 
@@ -48,7 +49,12 @@ async function Page({ params }: { params: Promise<{ courseId: string }> }) {
     course.categroyId,
     course.chapters.some((chapter) => chapter.isPublished),
   ];
-
+  
+  const categories = await db.category.findMany({
+    orderBy: {
+      name: "asc",
+    },
+  });
 
 
   const totalFields = requiredFields.length;
@@ -87,7 +93,14 @@ async function Page({ params }: { params: Promise<{ courseId: string }> }) {
            initialData={{ imageUrl: course.imageUrl || "" }}
            courseId={courseId}
            />
-
+            <CategoryForm
+              initialData={{ categroyId: course.categroyId }}
+              courseId={courseId}
+              options={categories.map((category) => ({
+                label: category.name,
+                value: category.id,
+              }))}
+              />
           </div>
           <div className=" space-y-4 w-full justify-items-center mb-6">
             <div className="flex items-center gap-x-2 w-full lg:w-4/5 min-w-[320px]">
