@@ -7,6 +7,7 @@ import { IconBadge } from "@/components/customui/IconBadge";
 import TitleForm from "./_components/ChapterTitleForm";
 import ChapterDescriptionForm from "./_components/ChapterDescriptionForm";
 import ChapterAccessForm from "./_components/ChapterAccessForm";
+import ChapterVideoForm from "./_components/ChapterVideoForm";
 
 
 const ChapterIdPage = async ({
@@ -94,6 +95,7 @@ const ChapterIdPage = async ({
               <IconBadge icon={Video} />
               <h2 className="text-lg text-slate-600">Add a video</h2>
             </div>
+            <ChapterVideoForm chapterId={chapterId} courseId={courseId} initialData={chapter}/>
 
           </div>
         </div>
