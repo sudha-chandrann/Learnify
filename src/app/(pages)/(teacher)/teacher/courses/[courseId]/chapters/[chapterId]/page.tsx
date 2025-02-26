@@ -8,6 +8,7 @@ import TitleForm from "./_components/ChapterTitleForm";
 import ChapterDescriptionForm from "./_components/ChapterDescriptionForm";
 import ChapterAccessForm from "./_components/ChapterAccessForm";
 import ChapterVideoForm from "./_components/ChapterVideoForm";
+import ChapterActions from "./_components/ChapterActionButton";
 
 
 const ChapterIdPage = async ({
@@ -44,7 +45,8 @@ const ChapterIdPage = async ({
   const completedFields = requiredFields.filter(Boolean).length;
 
   const completionText = `( ${completedFields}/${totalFields})`;
-  
+  const iscomplete=requiredFields.every(Boolean);
+
 
   return (
     <>
@@ -66,7 +68,9 @@ const ChapterIdPage = async ({
                 </h1>
                 <span>Complete all fields {completionText}</span>
               </div>
-
+              <div className="ml-auto mt-2">
+                <ChapterActions disabled={!iscomplete} chapterId={chapterId} courseId={courseId} isPublished={chapter.isPublished}/>
+              </div>
             </div>
           </div>
         </div>
