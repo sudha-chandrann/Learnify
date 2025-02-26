@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import Toasterprovider from "@/provider/ToastProvider";
+import { EdgeStoreProvider } from "@/lib/edgestore";
 
 
 
@@ -33,8 +34,12 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >  
-           <Toasterprovider/>
+         
+          <EdgeStoreProvider>
+          <Toasterprovider/>
           {children}
+          </EdgeStoreProvider>
+          
         </body>
       </html>
     </ClerkProvider>
