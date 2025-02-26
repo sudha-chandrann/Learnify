@@ -83,6 +83,7 @@ async function Page({ params }: { params: Promise<{ courseId: string }> }) {
               courseId={courseId}
             />
 
+
           </div>
           <div className=" space-y-4 w-full justify-items-center mb-6">
             <div className="flex items-center gap-x-2 w-full lg:w-4/5 min-w-[320px]">
