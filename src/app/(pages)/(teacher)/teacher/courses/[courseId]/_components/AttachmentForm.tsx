@@ -1,5 +1,5 @@
 "use client";
-import React, {  useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { CloudUploadIcon, File, Loader2, PlusCircle, X } from "lucide-react";
@@ -28,7 +28,9 @@ function AttachmentForm({ initialData, courseId }: AttachmentFormProps) {
   const [name,setname]=useState<string>("");
   const [progress,setprogress]=useState(0);
   const [isloading,setisloading]=useState(false);
-
+  useEffect(()=>{
+    console.log("the file  is ",file)
+  },[file])
 
   const onSubmit = async (values: AttachmentFormState) => {
     try {
@@ -37,7 +39,8 @@ function AttachmentForm({ initialData, courseId }: AttachmentFormProps) {
       setIsEditing(false);
       setprogress(0)
       router.refresh();
-    } catch {
+    } catch (error) {
+      console.error("Error updating Course Image:", error);
       toast.error("Something went wrong. Please try again.");
     }
     finally{
@@ -54,6 +57,9 @@ function AttachmentForm({ initialData, courseId }: AttachmentFormProps) {
       router.refresh();
     } catch {
       toast.error("Something went wrong. Please try again.");
+    }
+    finally{
+        setDeletingId(null)
     }
   };
 
