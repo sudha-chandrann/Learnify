@@ -6,6 +6,7 @@ import { ArrowLeft, Eye, LayoutDashboard, Video } from "lucide-react";
 import { IconBadge } from "@/components/customui/IconBadge";
 import TitleForm from "./_components/ChapterTitleForm";
 import ChapterDescriptionForm from "./_components/ChapterDescriptionForm";
+import ChapterAccessForm from "./_components/ChapterAccessForm";
 
 
 const ChapterIdPage = async ({
@@ -85,6 +86,7 @@ const ChapterIdPage = async ({
               <IconBadge icon={Eye} />
               <h2 className="text-xl text-slate-600">Access Settings</h2>
             </div>
+            <ChapterAccessForm chapterId={chapterId} courseId={courseId} initialData={chapter} />
 
           </div>
           <div className="space-y-4  w-full justify-items-center mb-6">
