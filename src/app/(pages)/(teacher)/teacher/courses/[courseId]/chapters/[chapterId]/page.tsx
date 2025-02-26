@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import Link from "next/link";
 import { ArrowLeft, Eye, LayoutDashboard, Video } from "lucide-react";
 import { IconBadge } from "@/components/customui/IconBadge";
+import TitleForm from "./_components/ChapterTitleForm";
 
 
 const ChapterIdPage = async ({
@@ -72,6 +73,11 @@ const ChapterIdPage = async ({
               <IconBadge icon={LayoutDashboard} />
               <h2 className="text-xl text-slate-600">Customize your chapter</h2>
             </div>
+            <TitleForm
+              initialData={chapter}
+              chapterId={chapterId}
+              courseId={courseId}
+            />
 
             <div className="flex items-center gap-x-2 w-full lg:w-4/5">
               <IconBadge icon={Eye} />
