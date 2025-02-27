@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import InfoCard from "../_components/InfoCard";
 import { CheckCircle, Clock } from "lucide-react";
 import { getDashboardCourses } from "../../../../actions/getdashboard_Courses";
+import CoursesList from "@/components/customui/CourseList";
 
 export default async function HomePage() {
   const { userId } = await auth();
@@ -30,6 +31,9 @@ export default async function HomePage() {
         numberOfItems={completedCourse.length}
         variant="success"
         />
+      </div>
+      <div className=" w-full">
+        <CoursesList items={[...courseInProgress,...completedCourse]} />
       </div>
 
     </div>
