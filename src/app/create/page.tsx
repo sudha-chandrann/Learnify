@@ -11,9 +11,6 @@ function page() {
     setStep((prev)=>prev+1);
    }
    
-   const onPrevClick=()=>{
-    setStep((prev)=>prev-1);
-   }
 
   return (
     <div className='w-full h-screen flex flex-col items-center  '>
@@ -25,8 +22,13 @@ function page() {
     
        </div>
        <div className='flex items-center justify-between px-4 w-full py-10 md:w-[50%] '>
-        <Button variant="outline" disabled={step==0} onClick={onPrevClick}>Previous</Button>
-        <Button variant="outline" onClick={onNextClick}>Next</Button>
+        {
+          step !=0 && <Button variant="outline"  onClick={()=>{ setStep((prev)=>prev-1)}}>Previous</Button>
+        }
+        {
+          step==0 ?<Button variant="outline" className='ml-auto' onClick={()=>{setStep((prev)=>prev+1)}}>Next</Button>:<Button variant="teacher"  className='ml-auto' >Generate</Button>
+        }
+        
        </div>
     </div>
   )
