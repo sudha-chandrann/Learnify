@@ -1,11 +1,37 @@
-import React from 'react'
+// app/page.tsx or pages/index.tsx
 
-function page() {
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+import InfoCard from "../_components/InfoCard";
+import { CheckCircle, Clock } from "lucide-react";
+import { getDashboardCourses } from "../../../../actions/getdashboard_Courses";
+
+export default async function HomePage() {
+  const { userId } = await auth();
+  if (!userId) {
+    return redirect("/");
+  }
+
+  // Await the result of getDashboardCourses
+  const { completedCourse, courseInProgress } = await getDashboardCourses(userId);
+
   return (
-    <div>
-      dashboard
-    </div>
-  )
-}
+    <div className="p-6 space-y-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <InfoCard
+        icon={Clock}
+        label="In Progress "
+        numberOfItems={courseInProgress.length}
+        />
 
-export default page
+        <InfoCard
+        icon={CheckCircle}
+        label="Completed "
+        numberOfItems={completedCourse.length}
+        variant="success"
+        />
+      </div>
+
+    </div>
+  );
+}
