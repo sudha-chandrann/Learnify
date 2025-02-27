@@ -31,18 +31,9 @@ export async function PATCH(
       // Parse and validate request body
       const {  ...values } = await req.json();
   
-      // Verify the user owns the course before allowing updates
-      const course = await db.course.findUnique({
-        where: { id: courseId, userId },
-      });
-  
-      if (!course) {
-        console.log(" the course is missing")
-        return NextResponse.json({ error: "Unauthorized action" }, { status: 403 });
-      }
       if(values.videoUrl){
         const chapter=await db.chapter.findUnique({
-            where: { id: chapterId },
+            where: { id: chapterId ,courseId:courseId},
         })
         if(!chapter){
             return NextResponse.json({ error: "Chapter not found" }, { status: 404 });
@@ -50,9 +41,11 @@ export async function PATCH(
         if(chapter.videoUrl){
             try {
                 const publicId = chapter.videoUrl.split("/").pop()?.split(".")[0];
+              
                 if (publicId) {
-                  await cloudinary.uploader.destroy(publicId);
+                  await cloudinary.uploader.destroy(publicId,{ resource_type: 'video' });
                 }
+               
               } catch (error) {
                 console.error(`Failed to delete video ${chapter.videoUrl} from Cloudinary`, error);
                 return NextResponse.json(
@@ -130,7 +123,7 @@ export async function PATCH(
   
 
 
-  export async function DELETE(
+export async function DELETE(
     req: Request,
     { params }: { params: Promise<{ courseId: string; chapterId: string }> }
   ) {
@@ -142,7 +135,7 @@ export async function PATCH(
         return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
       }
   
-      if (courseId || chapterId) {
+      if (!courseId || !chapterId) {
         return NextResponse.json({ error: "Missing required parameters" }, { status: 400 });
       }
   
@@ -150,7 +143,7 @@ export async function PATCH(
       const chapter = await db.chapter.findUnique({
         where: { id: chapterId, courseId: courseId },
       });
-  
+    
       if (!chapter) {
         return NextResponse.json({ error: "Unauthorized action" }, { status: 403 });
       }
@@ -160,7 +153,7 @@ export async function PATCH(
                 try {
                   const publicId = chapter.videoUrl.split("/").pop()?.split(".")[0];
                   if (publicId) {
-                    await cloudinary.uploader.destroy(publicId);
+                    await cloudinary.uploader.destroy(publicId,{ resource_type: 'video' });
                   }
                 } catch (error) {
                   console.error(`Failed to delete video ${chapter.videoUrl} from Cloudinary`, error);
