@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import Link from "next/link";
-import { ArrowLeft, Eye, LayoutDashboard, Video } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Eye, LayoutDashboard, Video } from "lucide-react";
 import { IconBadge } from "@/components/customui/IconBadge";
 import TitleForm from "./_components/ChapterTitleForm";
 import ChapterDescriptionForm from "./_components/ChapterDescriptionForm";
@@ -50,7 +50,14 @@ const ChapterIdPage = async ({
 
   return (
     <>
-
+      {
+        !chapter.isPublished && (
+          <div className="border text-center p-4 text-sm flex items-center w-full bg-yellow-200/80 border-yellow-30 text-primary">
+            <AlertTriangle className="h-4 w-4 mr-2 "/>
+           This chapter is unpublished.It is not be visible in the course
+          </div>
+        )
+      }
       <div className="p-6 ">
         <div className="flex items-center justify-between ">
           <div className="w-full ">

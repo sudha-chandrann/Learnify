@@ -11,6 +11,7 @@ import CategoryForm from "./_components/CategoryForm";
 import PriceForm from "./_components/PriceForm";
 import AttachmentForm from "./_components/AttachmentForm";
 import ChapterForm from "./_components/ChapterForm";
+import CourseActions from "./_components/CourseAction";
 
 async function Page({ params }: { params: Promise<{ courseId: string }> }) {
   const { userId } = await auth();
@@ -59,6 +60,7 @@ async function Page({ params }: { params: Promise<{ courseId: string }> }) {
   const totalFields = requiredFields.length;
   const completedFields = requiredFields.filter(Boolean).length;
   const completionText = `(${completedFields} / ${totalFields})`;
+  const iscomplete=requiredFields.every(Boolean);
 
   return (
     <>
@@ -69,6 +71,9 @@ async function Page({ params }: { params: Promise<{ courseId: string }> }) {
             <span className="text-sm text-slate-600">
               Complete all fields {completionText}
             </span>
+          </div>
+          <div>
+            <CourseActions isPublished={course.isPublished} courseId={courseId} disabled={!iscomplete}/>
           </div>
         </div>
 
