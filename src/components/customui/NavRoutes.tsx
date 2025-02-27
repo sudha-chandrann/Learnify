@@ -12,14 +12,14 @@ function NavRoutes() {
 
     const isTeacherPage=pathname?.startsWith("/teacher");
     const isCoursePage=pathname?.includes("/courses");
-
+    const isGeneratePage=pathname?.includes("/generate")
 
   return (
     <>
 
         <div className='flex gap-x-3 ml-auto'>
         {
-            isTeacherPage || isCoursePage ?
+            isTeacherPage || isCoursePage || isGeneratePage ?
             (
             <Link href="/dashboard">
                 <Button variant="teacher" size="teacher">
