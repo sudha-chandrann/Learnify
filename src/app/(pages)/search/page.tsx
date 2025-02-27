@@ -5,18 +5,18 @@ import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import CoursesList from '@/components/customui/CourseList';
 import { getCourses } from '../../../../actions/getCourses';
-interface SearchPageProps{
-  searchParams:Promise<{
-    title:string;
-    category:string;
-  }>
+import SearchInput from '@/components/customui/SearchInput';
+interface SearchPageProps {
+  searchParams: {
+    title?: string;
+    categoryId?: string;
+  }
 }
 
 async function page({
   searchParams
 }:SearchPageProps) {
   const {userId} =await auth();
-  const {title,category}= await searchParams;
   if(!userId){
     return redirect("/");
   }
@@ -26,10 +26,16 @@ async function page({
     }
   })  
 
-  const courses=await getCourses({userId:userId,title:title,categoryId:category})
-
+  const courses = await getCourses({
+    userId: userId,
+    title: searchParams.title,
+    categoryId: searchParams.categoryId
+  });
   return (
     <div>
+    <div className="md:hidden md:mb-0  w-full pt-3 ml-5 flex items-center"> 
+      <SearchInput />
+  </div>
     <div className="w-full">
       <Categories  items={categories}/>
       <CoursesList items={courses}/>
