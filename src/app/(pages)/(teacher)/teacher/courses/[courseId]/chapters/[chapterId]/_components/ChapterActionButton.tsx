@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import ConfirmModel from "@/components/customui/ConfirmModel";
+import { useConfettiStore } from "../../../../../../../../../../hooks/use-confetti-store";
 
 interface ChapterActionProps {
   disabled: boolean;
@@ -22,6 +23,8 @@ function ChapterActions({
 }: ChapterActionProps) {
   const [isloading, setloading] = useState(false);
   const router = useRouter();
+  const confetti =useConfettiStore();
+
   const handleDelete = async () => {
     try {
       setloading(true);
@@ -49,6 +52,8 @@ function ChapterActions({
           `/api/courses/${courseId}/chapters/${chapterId}/publish`
         );
         toast.success("chapter is  published successfully!");
+        confetti.onOpen()
+
       }
       router.refresh();
     } catch (error) {

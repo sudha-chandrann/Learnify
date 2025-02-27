@@ -4,6 +4,7 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import Toasterprovider from "@/provider/ToastProvider";
 import { EdgeStoreProvider } from "@/lib/edgestore";
+import { ConfettiProvider } from "@/provider/ConfettiProvider";
 
 
 
@@ -36,6 +37,7 @@ export default function RootLayout({
         >  
          
           <EdgeStoreProvider>
+          <ConfettiProvider/>
           <Toasterprovider/>
           {children}
           </EdgeStoreProvider>
