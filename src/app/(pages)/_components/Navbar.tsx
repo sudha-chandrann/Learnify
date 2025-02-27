@@ -1,5 +1,5 @@
 "use client";
-import React, { Suspense } from "react";
+import React from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import SideBar from "./SideBar";
 import { Menu } from "lucide-react";
@@ -15,9 +15,9 @@ function Navbar() {
     <div className="h-full shadow-md  flex px-4  items-center justify-between ">
       {isSearchPage && (
         <div className="hidden md:block mr-auto ml-3">
-          <Suspense>
+         
             <SearchInput />
-          </Suspense>
+         
         </div>
       )}
       <div className="md:hidden">

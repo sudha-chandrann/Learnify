@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import React from 'react'
 import Categories from './_componenets/Categories'
 import { db } from '@/lib/db'
 import { auth } from '@clerk/nextjs/server';
@@ -34,10 +34,9 @@ async function page({
   return (
     <div>
     <div className="md:hidden md:mb-0  w-full pt-3 ml-5 flex items-center"> 
-      <Suspense>
 
       <SearchInput />
-      </Suspense>
+      
   </div>
     <div className="w-full">
       <Categories  items={categories}/>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import Navbar from './_components/Navbar';
 import SideBar from './_components/SideBar';
 
@@ -10,8 +10,8 @@ function PageLayout({
     children: React.ReactNode;
   }>) {
   return (
-   
-    <div className='h-screen flex'>
+   <Suspense>
+        <div className='h-screen flex'>
         <div className='h-[60px] md:pl-56 lg:pl-64 fixed insert-y-0 w-full bg-white z-50'>
           <Navbar/>
         </div>
@@ -24,6 +24,8 @@ function PageLayout({
           </div>
      
     </div>
+   </Suspense>
+
   
 
   )
