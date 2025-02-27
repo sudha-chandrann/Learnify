@@ -11,7 +11,7 @@ function WelcomeBanner() {
         <div className="flex-1">
           <h2 className="mb-1 text-2xl font-bold md:text-3xl">Hello User</h2>
           <p className="text-lg text-blue-100">
-            Welcome Back, it's time to get back and start learning new courses
+            Welcome Back, it&apos;s time to get back and start learning new courses
           </p>
           <button className="mt-4 rounded-lg bg-white px-4 py-2 font-semibold text-sky-700 shadow transition-all hover:bg-blue-50">
             Explore Courses
