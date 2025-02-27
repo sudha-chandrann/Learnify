@@ -26,7 +26,7 @@ function CoursesList({ items }: CourseListProps) {
           No Courses found
         </div>
       )}
-      <div className="w-full  grid grid-cols-1  gap-x-6 gap-y-4 md:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4">
+      <div className="w-full  grid grid-cols-1  gap-x-6 gap-y-4 md:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
         {items.map((item) => (
          <Link href={`/courses/${item.id}`}  key={item.id}>
         <div
