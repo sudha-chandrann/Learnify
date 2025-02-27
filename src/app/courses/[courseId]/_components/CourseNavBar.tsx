@@ -11,6 +11,7 @@ import {
   } from "@/components/ui/sheet";
 import { Menu } from 'lucide-react';
 import CourseSideBar from './CourseSideBar';
+
 interface CourseNavBarprops {
     course:Course & {
         chapters:(Chapter & {
@@ -28,6 +29,7 @@ async function CourseNavBar({course,progresscount}:CourseNavBarprops) {
 
   return (
     <div className='h-full shadow-md w-full flex px-3  items-center '>
+     
      <div className='md:hidden'>
         <Sheet>
             <SheetTrigger>
