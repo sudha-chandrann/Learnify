@@ -36,13 +36,40 @@ function CourseActions({
         }
       };
 
-  console.log(isPublished,disabled)
-    
+      const handleTooglepublish = async () => {
+        try {
+          setloading(true);
+          if(isPublished){
+            await axios.patch(`/api/courses/${courseId}/unpublish`)
+            toast.success("course is  unpublished successfully!");
+          }
+          else{
+            await axios.patch(`/api/courses/${courseId}/publish`)
+            toast.success("course is  published successfully!");
+            
+          }
+          router.refresh();
+        } catch (error) {
+          console.error("Error updating publishing:", error);
+          toast.error("Something went wrong. Please try again.");
+        }
+        finally{
+          setloading(false);
+        }
+      };
+      
 
 
   return (
     <div className="flex items-center gap-x-2">
-
+                <Button
+        variant="teacher"
+        size="sm"
+        onClick={async () => {
+            handleTooglepublish();
+         }}
+        disabled={disabled || isloading}
+      ></Button>
       <ConfirmModel
          isCourse={true}
          onConfirm={async () => {

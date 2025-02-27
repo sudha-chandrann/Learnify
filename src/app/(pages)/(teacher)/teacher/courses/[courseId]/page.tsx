@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import TitleForm from "./_components/TitleForm";
 import DescriptionForm from "./_components/DescriptionForm";
 import { IconBadge } from "@/components/customui/IconBadge";
-import { CircleDollarSign, File, LayoutDashboard, ListChecks } from "lucide-react";
+import { AlertTriangle, CircleDollarSign, File, LayoutDashboard, ListChecks } from "lucide-react";
 import ImageForm from "./_components/ImageForm";
 import CategoryForm from "./_components/CategoryForm";
 import PriceForm from "./_components/PriceForm";
@@ -64,6 +64,14 @@ async function Page({ params }: { params: Promise<{ courseId: string }> }) {
 
   return (
     <>
+          {
+        !course.isPublished && (
+          <div className="border text-center p-4 text-sm flex items-center w-full bg-yellow-200/80 border-yellow-30 text-primary">
+            <AlertTriangle className="h-4 w-4 mr-2 "/>
+            This course is unpublished.It is not be visible to the students.
+          </div>
+        )
+      }
       <div className="h-full p-6 w-full md:px-12">
         <div className="flex items-center flex-wrap justify-between w-full">
           <div className="flex flex-col">
