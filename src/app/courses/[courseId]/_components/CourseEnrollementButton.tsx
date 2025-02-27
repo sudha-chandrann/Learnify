@@ -36,7 +36,7 @@ function CourseEnrollButton({courseId,price}:CourseEnrollButtonProps) {
    }
 
   return (
-    <Button className="w-full h-12 mb-4 text-md bg-sky-600 hover:bg-sky-700" onClick={onclick} disabled={isloading}>
+    <Button className="w-fit h-12 mb-4  px-4 text-md bg-sky-600 hover:bg-sky-700" onClick={onclick} disabled={isloading}>
     
     Enroll Course for {formatPrice(price)}
   </Button>
