@@ -16,7 +16,14 @@ export async function POST(req: Request) {
     if (!user || !user.id) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-
+    const currentuser= await db.user.findUnique({
+      where:{
+        id:user.id
+      }
+    })
+    if (!currentuser ) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
     // 🔹 Extract required data from the request body
     const body = await req.json();
     
@@ -42,19 +49,17 @@ export async function POST(req: Request) {
     }
 
     // 🔹 Store the generated material in Prisma (Database)
-    const newStudyMaterial = await db.studyMaterial.create({
+     await db.studyMaterial.create({
       data: {
         topic,
         difficultyLevel:difficultyLevel,
         materialType: studyType,
-        createdby: user.id,
+        createdby: currentuser.id,
         materialLayout: generatedMaterial,
       },
     });
-    console.log(" the study  material is ",newStudyMaterial)
     return NextResponse.json({
-      message: "Study material generated and stored successfully!",
-      studyMaterial: newStudyMaterial,
+      message: "Study material generated and stored successfully!"
     });
   } catch (error) {
     console.error("[Generate Study Material]", error);

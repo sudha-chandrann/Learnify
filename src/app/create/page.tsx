@@ -4,6 +4,7 @@ import SelectOption from "./_components/SelectOption";
 import { Button } from "@/components/ui/button";
 import TopicInput from "./_components/TopicInput";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 
 interface FormData {
@@ -34,16 +35,16 @@ const Page: React.FC = () => {
 
   const generateStudyMaterial = async () => {
     if (!formData.topic || !formData.studyType || !formData.difficultyLevel) {
-      alert("Please fill in all fields before generating study material.");
+      toast.error("Please fill in all fields before generating study material.");
       return;
     }
 
     try {
       setLoading(true);
       const response = await axios.post("/api/generate", formData);
-
-      console.log("Study Material Generated:", response.data);
+      toast.success(response.data.message||"Study Material is created Successfully");
     } catch (error) {
+      toast.error("Failed to generate study material.");
       console.error("Error generating study material:", error);
     } finally {
       setLoading(false);

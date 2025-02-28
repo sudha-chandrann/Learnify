@@ -2,6 +2,7 @@ import WelcomeBanner from "./_components/WelcomeBanner";
 import {  currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
+import CourseLayout from "./_components/CourseLayout";
 
 export default async function Page() {
   const user = await currentUser();
@@ -29,10 +30,20 @@ export default async function Page() {
     }
   }
 
+  const courses= await db.studyMaterial.findMany({
+    where: {
+      createdby:user.id
+    }
+  })
+
   return (
     <div className="h-full w-full">
       <div className="w-full p-3">
         <WelcomeBanner username={User?.name || "User"} />
+      </div>
+      <div className="w-full p-3">
+        {courses.length>=1 &&( <div className="my-2 mx-4 font-extrabold text-2xl text-sky-700">Your Study Materials</div>)}
+        <CourseLayout courses={courses}/>
       </div>
     </div>
   );
