@@ -11,11 +11,12 @@ import { Card, CardContent } from "@/components/ui/card";
 
 interface TopicInputProps {
   onTopicChange?: (value: string) => void;
+  selectDifficultylevel?:(value:string)=>void;
 }
 
 type DifficultyLevel = "" | "beginner" | "intermediate" | "advanced" | "expert";
 
-const TopicInput: React.FC<TopicInputProps> = ({ onTopicChange }) => {
+const TopicInput: React.FC<TopicInputProps> = ({ onTopicChange,selectDifficultylevel }) => {
   const [topicText, setTopicText] = useState<string>("");
   const [difficulty, setDifficulty] = useState<DifficultyLevel>("");
 
@@ -27,7 +28,7 @@ const TopicInput: React.FC<TopicInputProps> = ({ onTopicChange }) => {
 
   const handleDifficultyChange = (value: DifficultyLevel): void => {
     setDifficulty(value);
-    // You can add additional handling here if needed
+    selectDifficultylevel?.(value);
   };
 
   const difficultyDescriptions: Record<Exclude<DifficultyLevel, "">, string> = {

@@ -17,6 +17,7 @@ interface FormData {
 
 const Page: React.FC = () => {
   const [step, setStep] = useState<number>(0);
+  const [isloading,setLoading]=useState(false);
   const [formData, setFormData] = useState<FormData>({
     studyType: "",
     topic: ""
@@ -33,6 +34,24 @@ const Page: React.FC = () => {
     }));
   };
 
+  const generateStudyMaterial = async () => {
+    if (!formData.topic) {
+      alert(" missing data")
+      return;
+    }
+
+    try {
+      setLoading(true);
+      
+      console.log("Generating study material with data:", formData);
+      
+    } catch (error) {
+      console.error("Error generating study material:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className='w-full h-screen flex flex-col items-center'>
       <h1 className='font-bold text-4xl text-sky-700 text-center mt-14 md:mt-28'>
@@ -42,11 +61,11 @@ const Page: React.FC = () => {
         Fill the details in order to generate study material for you
       </p>
 
-      <div className='mt-4'>
+      <div className='mt-4 mx-2'>
         {step === 0 ? (
           <SelectOption studyOption={(value: string) => handleUserInput({ fieldName: 'studyType', fieldValue: value })} />
         ) : (
-          <TopicInput onTopicChange={(value: string) => handleUserInput({ fieldName: 'topic', fieldValue: value })} />
+          <TopicInput onTopicChange={(value: string) => handleUserInput({ fieldName: 'topic', fieldValue: value })}  selectDifficultylevel={(value: string) => handleUserInput({ fieldName: 'Difficultylevel', fieldValue: value })}/>
         )}
       </div>
 
@@ -65,6 +84,7 @@ const Page: React.FC = () => {
             variant="outline" 
             className='ml-auto' 
             onClick={onNextClick}
+            disabled={isloading}
           >
             Next
           </Button>
@@ -72,6 +92,8 @@ const Page: React.FC = () => {
           <Button 
             variant="default" 
             className='ml-auto'
+            disabled={isloading}
+            onClick={generateStudyMaterial}
           >
             Generate
           </Button>
