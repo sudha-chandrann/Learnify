@@ -14,7 +14,7 @@ interface TopicInputProps {
   selectDifficultylevel?:(value:string)=>void;
 }
 
-type DifficultyLevel = "" | "beginner" | "intermediate" | "advanced" | "expert";
+type DifficultyLevel = "" | "Easy" | "Moderate" | "Hard" ;
 
 const TopicInput: React.FC<TopicInputProps> = ({ onTopicChange,selectDifficultylevel }) => {
   const [topicText, setTopicText] = useState<string>("");
@@ -32,10 +32,9 @@ const TopicInput: React.FC<TopicInputProps> = ({ onTopicChange,selectDifficultyl
   };
 
   const difficultyDescriptions: Record<Exclude<DifficultyLevel, "">, string> = {
-    beginner: "Perfect for newcomers to the subject",
-    intermediate: "For those with some prior knowledge",
-    advanced: "For in-depth understanding of complex topics",
-    expert: "For mastery of the subject matter"
+    Easy: "Perfect for newcomers to the subject",
+    Moderate: "For those with some prior knowledge",
+    Hard: "For in-depth understanding of complex topics",
   };
 
   return (
@@ -67,10 +66,9 @@ const TopicInput: React.FC<TopicInputProps> = ({ onTopicChange,selectDifficultyl
                 <SelectValue placeholder="Difficulty Level" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="beginner">Beginner</SelectItem>
-                <SelectItem value="intermediate">Intermediate</SelectItem>
-                <SelectItem value="advanced">Advanced</SelectItem>
-                <SelectItem value="expert">Expert</SelectItem>
+                <SelectItem value="Easy">Easy</SelectItem>
+                <SelectItem value="Moderate">Moderate</SelectItem>
+                <SelectItem value="Hard">Hard</SelectItem>
               </SelectContent>
             </Select>
           </div>

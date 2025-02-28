@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 
-function WelcomeBanner() {
+function WelcomeBanner({username}:{username:string}) {
   return (
     <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-sky-600 to-sky-800 text-white shadow-lg">
       <div className="absolute -right-4 -top-4 h-32 w-32 rounded-full bg-sky-300 opacity-30 blur-xl"></div>
@@ -9,7 +9,7 @@ function WelcomeBanner() {
       
       <div className="relative z-10 flex flex-col items-start justify-between gap-4 p-6 md:flex-row md:items-center">
         <div className="flex-1">
-          <h2 className="mb-1 text-2xl font-bold md:text-3xl">Hello User</h2>
+          <h2 className="mb-1 text-2xl font-bold md:text-3xl">Hello {username}</h2>
           <p className="text-lg text-blue-100">
             Welcome Back, it&apos;s time to get back and start learning new courses
           </p>

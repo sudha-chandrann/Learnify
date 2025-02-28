@@ -105,3 +105,26 @@ model Purchase {
   @@unique([userId, courseId])
   @@index([courseId])
 }
+
+
+
+model User {
+  id             String           @id 
+  isMember       Boolean          @default(false)
+  name           String
+  email          String
+  studyMaterials StudyMaterial[]
+}
+
+model StudyMaterial {
+  id              String         @id @default(uuid())
+  topic           String
+  difficultyLevel String       
+  materialType    String
+  createdby       String
+  user            User          @relation(fields: [createdby], references: [id], onDelete: Cascade)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  materialLayout  Json
+  @@index([createdby])
+}
