@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import TopicInput from "./_components/TopicInput";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 
 interface FormData {
@@ -21,6 +22,7 @@ const Page: React.FC = () => {
     topic: "",
     difficultyLevel: "", // 🔹 Ensure difficulty level is included
   });
+  const router= useRouter();
  
   const onNextClick = (): void => {
     setStep((prev) => prev + 1);
@@ -43,6 +45,7 @@ const Page: React.FC = () => {
       setLoading(true);
       const response = await axios.post("/api/generate", formData);
       toast.success(response.data.message||"Study Material is created Successfully");
+      router.push("/generate")
     } catch (error) {
       toast.error("Failed to generate study material.");
       console.error("Error generating study material:", error);

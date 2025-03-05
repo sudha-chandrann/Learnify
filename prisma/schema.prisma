@@ -126,5 +126,16 @@ model StudyMaterial {
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   materialLayout  Json
+  status          String  @default("generating")
+  chapters        StudyChapter[]
   @@index([createdby])
+}
+
+
+model StudyChapter {
+  id              String         @id @default(uuid())
+  CourseId        String
+  course          StudyMaterial   @relation(fields: [CourseId],references: [id] , onDelete: Cascade)
+  notes           String         @db.LongText
+  @@index([CourseId])
 }
