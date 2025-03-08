@@ -6,6 +6,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import CourseIntro from "../_components/CourseIntro";
 import StudyMaterial from "../_components/StudyMaterial";
+import ChapterCard from "../_components/ChapteCard";
 
 interface PageProps {
   params: {
@@ -53,10 +54,12 @@ async function StudyChaptersPage({ params }: PageProps) {
     where: {
       CourseId: courseId,
     },
+    orderBy:{
+      orderIndex: 'asc',
+    }
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const materialLayout = studyMaterial?.materialLayout as any;
+
 
   return (
     <div className="container mx-auto py-8 px-[5%] lg:px-[10%]">
@@ -79,7 +82,7 @@ async function StudyChaptersPage({ params }: PageProps) {
       {/* Chapters list */}
       <div className="bg-white rounded-xl shadow-md overflow-hidden">
         <div className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Course Content</h2>
+          <h2 className="text-xl font-semibold mb-4 text-sky-600">Course Chapters/Notes</h2>
 
           {chapters.length === 0 ? (
             <div className="p-6 bg-gray-50 rounded-lg text-center">
@@ -89,58 +92,9 @@ async function StudyChaptersPage({ params }: PageProps) {
             </div>
           ) : (
             <div className="space-y-4">
-              {chapters.map((chapter, index) => {
-                const chapterData = materialLayout?.chapters[index] || {};
-                const chapterName =
-                  chapterData.chapter_name || `Chapter ${index + 1}`;
-                const chapterSummary =
-                  chapterData.chapter_summary || "No summary available";
-                const topics = chapterData.topics || [];
-
-                return (
-                  <div
-                    key={chapter.id}
-                    className="border border-gray-200 rounded-lg hover:border-blue-300 transition-all"
-                  >
-                    <Link
-                      href={`/study/${courseId}/chapter/${chapter.id}`}
-                      className="block p-4"
-                    >
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <h3 className="text-lg font-medium text-gray-800">
-                            {index + 1}. {chapterName}
-                          </h3>
-                          <p className="text-gray-600 mt-1">{chapterSummary}</p>
-
-                          {topics.length > 0 && (
-                            <div className="mt-2">
-                              <div className="flex flex-wrap gap-2 mt-2">
-                                {topics
-                                  .slice(0, 3)
-                                  .map((topic: string, i: number) => (
-                                    <span
-                                      key={i}
-                                      className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full"
-                                    >
-                                      {topic}
-                                    </span>
-                                  ))}
-                                {topics.length > 3 && (
-                                  <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
-                                    +{topics.length - 3} more
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                        <div className="text-blue-600">→</div>
-                      </div>
-                    </Link>
-                  </div>
-                );
-              })}
+              {chapters.map((chapter) => (
+                <ChapterCard key={chapter.id} chapter={chapter} courseId={courseId} studyMaterial={studyMaterial}/>
+              ))}
             </div>
           )}
         </div>
