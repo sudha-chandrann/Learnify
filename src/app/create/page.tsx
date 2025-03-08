@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 
 
 interface FormData {
-  studyType: string;
+  materialType: string;
   topic: string;
   difficultyLevel: string;
 }
@@ -18,7 +18,7 @@ const Page: React.FC = () => {
   const [step, setStep] = useState<number>(0);
   const [isLoading, setLoading] = useState(false);
   const [formData, setFormData] = useState<FormData>({
-    studyType: "",
+    materialType: "",
     topic: "",
     difficultyLevel: "", // 🔹 Ensure difficulty level is included
   });
@@ -36,7 +36,7 @@ const Page: React.FC = () => {
   };
 
   const generateStudyMaterial = async () => {
-    if (!formData.topic || !formData.studyType || !formData.difficultyLevel) {
+    if (!formData.topic || !formData.materialType || !formData.difficultyLevel) {
       toast.error("Please fill in all fields before generating study material.");
       return;
     }
@@ -66,7 +66,7 @@ const Page: React.FC = () => {
       <div className="mt-4 mx-2">
         {step === 0 ? (
           <SelectOption 
-            studyOption={(value: string) => handleUserInput("studyType", value)} 
+            studyOption={(value: string) => handleUserInput("materialType", value)} 
           />
         ) : (
           <TopicInput 
