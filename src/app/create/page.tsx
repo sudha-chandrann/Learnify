@@ -78,7 +78,7 @@ const Page: React.FC = () => {
 
       <div className="flex items-center justify-between px-4 w-full py-10 md:w-[50%]">
         {step !== 0 && (
-          <Button variant="outline" onClick={() => setStep((prev) => prev - 1)}>
+          <Button variant="outline" onClick={() => setStep((prev) => prev - 1)} disabled={isLoading}>
             Previous
           </Button>
         )}

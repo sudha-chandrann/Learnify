@@ -17,7 +17,7 @@ function GeneratingButton({ courseid }: { courseid: string }) {
       toast.success("Chapters generated successfully!");
       // Refresh or navigate to course details page
       router.refresh();
-      router.push(`/generate/${courseid}`);
+      router.push(`/material/${courseid}`);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {  // ✅ FIXED: Defined `error` as `any`
       console.error("Error during generating chapters", error);

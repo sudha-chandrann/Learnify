@@ -58,7 +58,7 @@ function CourseIntro({ studyMaterial, chapterlenght }: CourseIntroProps) {
       <div className="p-8">
         {/* Topic badge */}
         <div className="mb-3">
-          <span className="px-3 py-1 bg-white text-blue-600 rounded-full text-sm font-medium shadow-sm inline-flex items-center">
+          <span className="px-3 py-1 bg-white text-sky-600 rounded-full text-sm font-medium shadow-sm inline-flex items-center">
             <Code className="w-3.5 h-3.5 mr-1.5" />
             {studyMaterial?.topic}
           </span>
@@ -80,7 +80,7 @@ function CourseIntro({ studyMaterial, chapterlenght }: CourseIntroProps) {
           <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-100 flex flex-col">
             <span className="text-xs text-gray-500 uppercase tracking-wider">Type</span>
             <div className="flex items-center mt-1">
-              <Award className="w-4 h-4 mr-1.5 text-indigo-600" />
+              <Award className="w-4 h-4 mr-1.5 text-sky-800" />
               <span className="font-medium">{studyMaterial?.materialType}</span>
             </div>
           </div>
@@ -88,7 +88,7 @@ function CourseIntro({ studyMaterial, chapterlenght }: CourseIntroProps) {
           <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-100 flex flex-col">
             <span className="text-xs text-gray-500 uppercase tracking-wider">Chapters</span>
             <div className="flex items-center mt-1">
-              <BookOpen className="w-4 h-4 mr-1.5 text-blue-600" />
+              <BookOpen className="w-4 h-4 mr-1.5 text-sky-600" />
               <span className="font-medium">{chapterlenght}</span>
             </div>
           </div>
@@ -116,18 +116,18 @@ function CourseIntro({ studyMaterial, chapterlenght }: CourseIntroProps) {
           <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
             <div className="flex justify-between items-center mb-3">
               <div className="flex items-center">
-                <CheckCircle className="w-5 h-5 mr-2 text-blue-600" />
+                <CheckCircle className="w-5 h-5 mr-2 text-sky-600" />
                 <span className="text-gray-800 font-semibold">Your Progress</span>
               </div>
               <div className="bg-blue-50 px-3 py-1 rounded-full">
-                <span className="text-blue-700 font-medium">0/{chapterlenght} completed</span>
+                <span className="text-sky-700 font-medium">0/{chapterlenght} completed</span>
               </div>
             </div>
             
             <div className="w-full bg-gray-100 rounded-full h-3">
               <div 
-                className="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full transition-all duration-500 ease-in-out" 
-                style={{ width: '0%' }}
+                className="bg-gradient-to-r from-sky-500 to-purple-600 h-3 rounded-full transition-all duration-500 ease-in-out" 
+                style={{ width: '10%' }}
               ></div>
             </div>
             
@@ -139,7 +139,6 @@ function CourseIntro({ studyMaterial, chapterlenght }: CourseIntroProps) {
           </div>
         </div>
         
-      
       </div>
     </div>
   );

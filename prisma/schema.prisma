@@ -109,33 +109,176 @@ model Purchase {
 
 
 model User {
-  id             String           @id 
+  id             String           @id
   isMember       Boolean          @default(false)
   name           String
-  email          String
+  email          String           @unique
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
   studyMaterials StudyMaterial[]
+  flashcardSets  FlashcardSet[]
+  quizzes        Quiz[]
+  qaCollections  QACollection[]
 }
 
 model StudyMaterial {
   id              String         @id @default(uuid())
   topic           String
-  difficultyLevel String       
-  materialType    String
+  difficultyLevel String
+  materialType    String         // "Exam", "Coding", "JobInterview", "Practice"
   createdby       String
-  user            User          @relation(fields: [createdby], references: [id], onDelete: Cascade)
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  user            User           @relation(fields: [createdby], references: [id], onDelete: Cascade)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
   materialLayout  Json
-  status          String  @default("generating")
+  status          String         @default("generating")
+  
+  // Relations to various content types
   chapters        StudyChapter[]
+  flashcardSet    FlashcardSet?
+  quiz            Quiz?
+  qaCollection    QACollection?
+
   @@index([createdby])
 }
-
 
 model StudyChapter {
   id              String         @id @default(uuid())
   CourseId        String
-  course          StudyMaterial   @relation(fields: [CourseId],references: [id] , onDelete: Cascade)
+  course          StudyMaterial  @relation(fields: [CourseId], references: [id], onDelete: Cascade)
   notes           String         @db.LongText
+  orderIndex      Int            @default(0)  // For chapter ordering
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
   @@index([CourseId])
 }
+
+model FlashcardSet {
+  id              String         @id @default(uuid())
+  studyMaterialId String         @unique  // One-to-one with StudyMaterial
+  studyMaterial   StudyMaterial  @relation(fields: [studyMaterialId], references: [id], onDelete: Cascade)
+  createdby       String
+  user            User           @relation(fields: [createdby], references: [id], onDelete: Cascade)
+  title           String
+  description     String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  flashcards      Flashcard[]
+
+  @@index([createdby])
+  @@index([studyMaterialId])
+}
+
+model Flashcard {
+  id              String         @id @default(uuid())
+  flashcardSetId  String
+  flashcardSet    FlashcardSet   @relation(fields: [flashcardSetId], references: [id], onDelete: Cascade)
+  front           String         @db.Text
+  back            String         @db.Text
+  // tags            String[]
+  difficulty      Int            @default(1)  // 1-5 scale
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([flashcardSetId])
+}
+
+model Quiz {
+  id              String         @id @default(uuid())
+  studyMaterialId String         @unique  // One-to-one with StudyMaterial
+  studyMaterial   StudyMaterial  @relation(fields: [studyMaterialId], references: [id], onDelete: Cascade)
+  createdby       String
+  user            User           @relation(fields: [createdby], references: [id], onDelete: Cascade)
+  title           String
+  description     String?
+  timeLimit       Int?           // Time limit in minutes, null means no limit
+  passingScore    Int            @default(70)  // Percentage needed to pass
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  questions       QuizQuestion[]
+  attempts        QuizAttempt[]
+
+  @@index([createdby])
+  @@index([studyMaterialId])
+}
+
+model QuizQuestion {
+  id              String         @id @default(uuid())
+  quizId          String
+  quiz            Quiz           @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  questionText    String         @db.Text
+  questionType    String         // "MultipleChoice", "TrueFalse", "FillInBlank"
+  options         Json?          // For multiple choice questions
+  correctAnswer   String         @db.Text
+  explanation     String?        @db.Text
+  points          Int            @default(1)
+  orderIndex      Int            @default(0)  // For question ordering
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  responses       QuizResponse[]
+
+  @@index([quizId])
+}
+
+model QuizAttempt {
+  id              String         @id @default(uuid())
+  quizId          String
+  quiz            Quiz           @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  userId          String
+  score           Float
+  maxScore        Float
+  completed       Boolean        @default(false)
+  startedAt       DateTime       @default(now())
+  completedAt     DateTime?
+  responses       QuizResponse[]
+
+  @@index([quizId])
+  @@index([userId])
+}
+
+model QuizResponse {
+  id              String         @id @default(uuid())
+  attemptId       String
+  attempt         QuizAttempt    @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  questionId      String
+  question        QuizQuestion   @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  userAnswer      String?        @db.Text
+  isCorrect       Boolean
+  pointsEarned    Float
+
+  @@index([attemptId])
+  @@index([questionId])
+}
+
+model QACollection {
+  id              String         @id @default(uuid())
+  studyMaterialId String         @unique  // One-to-one with StudyMaterial
+  studyMaterial   StudyMaterial  @relation(fields: [studyMaterialId], references: [id], onDelete: Cascade)
+  createdby       String
+  user            User           @relation(fields: [createdby], references: [id], onDelete: Cascade)
+  title           String
+  description     String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  qaPairs         QAPair[]
+
+  @@index([createdby])
+  @@index([studyMaterialId])
+}
+
+model QAPair {
+  id              String         @id @default(uuid())
+  collectionId    String
+  collection      QACollection   @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  question        String         @db.Text
+  answer          String         @db.Text
+  category        String?        // Optional categorization
+  difficulty      Int            @default(1)  // 1-5 scale
+  orderIndex      Int            @default(0)  // For ordering
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([collectionId])
+}
+
