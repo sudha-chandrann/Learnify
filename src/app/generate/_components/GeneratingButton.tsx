@@ -13,13 +13,11 @@ function GeneratingButton({ courseid }: { courseid: string }) {
   const GenerateChapters = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.post("/api/generate/courses", { courseId: courseid });
-      console.log(response.data);
+       await axios.post("/api/generate/courses", { courseId: courseid });
       toast.success("Chapters generated successfully!");
-      
       // Refresh or navigate to course details page
       router.refresh();
-      // router.push(`/courses/${courseid}`);
+      router.push(`/generate/${courseid}`);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {  // ✅ FIXED: Defined `error` as `any`
       console.error("Error during generating chapters", error);
@@ -32,7 +30,7 @@ function GeneratingButton({ courseid }: { courseid: string }) {
   return (
     <Button 
       disabled={isLoading}
-      className="w-full py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg flex items-center justify-center gap-2 transition"
+      className="w-full py-2 px-4 bg-sky-500 hover:bg-sky-600 text-white rounded-lg flex items-center justify-center gap-2 transition"
       onClick={GenerateChapters}
     >
       {isLoading && <Loader2 className="h-4 w-4 animate-spin" />} 

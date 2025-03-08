@@ -87,6 +87,12 @@ export async function POST(req: Request) {
       createdChapters.push(createdChapter);
     }
 
+    // 🔹 Update the study material status to "created" after all chapters are generated
+    await db.studyMaterial.update({
+      where: { id: courseId },
+      data: { status: "created" }
+    });
+
     return NextResponse.json({
       message: "Chapters with AI-generated notes created successfully!",
       chapters: createdChapters,
