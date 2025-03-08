@@ -13,13 +13,12 @@ function GeneratingButton({ courseid }: { courseid: string }) {
   const GenerateChapters = async () => {
     try {
       setIsLoading(true);
-       await axios.post("/api/generate/courses", { courseId: courseid });
+      await axios.post("/api/generate/courses", { courseId: courseid });
       toast.success("Chapters generated successfully!");
-      // Refresh or navigate to course details page
       router.refresh();
       router.push(`/material/${courseid}`);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {  // ✅ FIXED: Defined `error` as `any`
+    } catch (error: any) {  
       console.error("Error during generating chapters", error);
       toast.error(error?.response?.data?.message || "Something went wrong during generation");
     } finally {

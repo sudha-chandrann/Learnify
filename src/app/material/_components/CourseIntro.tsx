@@ -1,63 +1,41 @@
+import { formatDate } from '@/lib/format';
 import { StudyMaterial } from '@prisma/client';
 import { BarChart, BookOpen, Clock, Code, CheckCircle, Award } from 'lucide-react';
 import React from 'react';
 
 interface CourseIntroProps {
   studyMaterial: StudyMaterial;
-  chapterlenght: number;
+  chaptersCount: number; // Renamed for clarity
 }
 
-function CourseIntro({ studyMaterial, chapterlenght }: CourseIntroProps) {
+
+export default function CourseIntro({ studyMaterial, chaptersCount }: CourseIntroProps) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const materialLayout = studyMaterial?.materialLayout as any;
-  const courseName = materialLayout?.course_name || studyMaterial?.topic;
-  const courseSummary = materialLayout?.course_summary;
+  const materialLayout = studyMaterial?.materialLayout as Record<string, any> | null;
+  const courseName = materialLayout?.course_name || studyMaterial?.topic || 'Untitled Course';
+  const courseSummary = materialLayout?.course_summary || 'No course description available.';
+  
+  const completedChapters = 0;
+  const progressPercentage = chaptersCount > 0 ? (completedChapters / chaptersCount) * 100 : 0;
 
-  // Generate a background gradient based on material type
-  const getBgGradient = () => {
-    switch (studyMaterial?.materialType?.toLowerCase()) {
-      case 'coding prep':
-        return 'from-blue-50 to-indigo-50';
-      case 'Exam':
-        return 'from-purple-50 to-pink-50';
-      case 'Job Interview':
-        return 'from-green-50 to-emerald-50';
-      case 'Practice':
-        return 'from-amber-50 to-orange-50';
-      default:
-        return 'from-gray-50 to-slate-50';
-    }
-  };
-
-  // Get icon color based on difficulty level
-  const getDifficultyColor = () => {
-    switch (studyMaterial?.difficultyLevel?.toLowerCase()) {
-      case 'easy':
-        return 'text-green-600';
-      case 'medium':
-        return 'text-amber-600';
-      case 'hard':
-        return 'text-red-600';
-      default:
-        return 'text-blue-600';
-    }
-  };
-
-  // Format the creation date nicely
-  const formatDate = (date: Date | null | undefined) => {
-    if (!date) return '';
-    return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+  //  Returns appropriate text color based on difficulty level
+  const getDifficultyColor = (): string => {
+    const difficultyLevel = studyMaterial?.difficultyLevel?.toLowerCase() || '';
+    
+    const colorMap: Record<string, string> = {
+      'easy': 'text-green-600',
+      'medium': 'text-amber-600',
+      'hard': 'text-red-600'
+    };
+    
+    return colorMap[difficultyLevel] || 'text-blue-600';
   };
 
   return (
-    <div className={`bg-gradient-to-br ${getBgGradient()} rounded-xl shadow-md overflow-hidden mb-8 border border-gray-100`}>
-      <div className="p-8">
+    <section className="bg-sky-100 rounded-xl shadow-md overflow-hidden mb-8 border border-gray-100">
+      <div className="p-6 md:p-8">
         {/* Topic badge */}
-        <div className="mb-3">
+        <div className="mb-4">
           <span className="px-3 py-1 bg-white text-sky-600 rounded-full text-sm font-medium shadow-sm inline-flex items-center">
             <Code className="w-3.5 h-3.5 mr-1.5" />
             {studyMaterial?.topic}
@@ -65,41 +43,33 @@ function CourseIntro({ studyMaterial, chapterlenght }: CourseIntroProps) {
         </div>
 
         {/* Course title */}
-        <h1 className="text-3xl font-bold text-gray-800 leading-tight">{courseName}</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-800 leading-tight">{courseName}</h1>
         
-        {/* Course metadata/stats - redesigned as cards */}
+        {/* Course metadata statistics */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
-          <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-100 flex flex-col">
-            <span className="text-xs text-gray-500 uppercase tracking-wider">Difficulty</span>
-            <div className="flex items-center mt-1">
-              <BarChart className={`w-4 h-4 mr-1.5 ${getDifficultyColor()}`} />
-              <span className="font-medium">{studyMaterial?.difficultyLevel}</span>
-            </div>
-          </div>
+          <MetadataCard 
+            label="Difficulty" 
+            value={studyMaterial?.difficultyLevel || 'N/A'} 
+            icon={<BarChart className={`w-4 h-4 mr-1.5 ${getDifficultyColor()}`} />} 
+          />
           
-          <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-100 flex flex-col">
-            <span className="text-xs text-gray-500 uppercase tracking-wider">Type</span>
-            <div className="flex items-center mt-1">
-              <Award className="w-4 h-4 mr-1.5 text-sky-800" />
-              <span className="font-medium">{studyMaterial?.materialType}</span>
-            </div>
-          </div>
+          <MetadataCard 
+            label="Type" 
+            value={studyMaterial?.materialType || 'N/A'} 
+            icon={<Award className="w-4 h-4 mr-1.5 text-sky-800" />} 
+          />
           
-          <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-100 flex flex-col">
-            <span className="text-xs text-gray-500 uppercase tracking-wider">Chapters</span>
-            <div className="flex items-center mt-1">
-              <BookOpen className="w-4 h-4 mr-1.5 text-sky-600" />
-              <span className="font-medium">{chapterlenght}</span>
-            </div>
-          </div>
+          <MetadataCard 
+            label="Chapters" 
+            value={chaptersCount.toString()} 
+            icon={<BookOpen className="w-4 h-4 mr-1.5 text-sky-600" />} 
+          />
           
-          <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-100 flex flex-col">
-            <span className="text-xs text-gray-500 uppercase tracking-wider">Created</span>
-            <div className="flex items-center mt-1">
-              <Clock className="w-4 h-4 mr-1.5 text-green-600" />
-              <span className="font-medium">{formatDate(studyMaterial?.createdAt)}</span>
-            </div>
-          </div>
+          <MetadataCard 
+            label="Created" 
+            value={formatDate(studyMaterial?.createdAt) || 'N/A'} 
+            icon={<Clock className="w-4 h-4 mr-1.5 text-green-600" />} 
+          />
         </div>
         
         {/* Course summary with decorative element */}
@@ -111,7 +81,7 @@ function CourseIntro({ studyMaterial, chapterlenght }: CourseIntroProps) {
           </div>
         </div>
         
-        {/* Course progress - enhanced */}
+        {/* Course progress tracking */}
         <div className="mt-8">
           <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
             <div className="flex justify-between items-center mb-3">
@@ -120,14 +90,14 @@ function CourseIntro({ studyMaterial, chapterlenght }: CourseIntroProps) {
                 <span className="text-gray-800 font-semibold">Your Progress</span>
               </div>
               <div className="bg-blue-50 px-3 py-1 rounded-full">
-                <span className="text-sky-700 font-medium">0/{chapterlenght} completed</span>
+                <span className="text-sky-700 font-medium">{completedChapters}/{chaptersCount} completed</span>
               </div>
             </div>
             
             <div className="w-full bg-gray-100 rounded-full h-3">
               <div 
                 className="bg-gradient-to-r from-sky-500 to-purple-600 h-3 rounded-full transition-all duration-500 ease-in-out" 
-                style={{ width: '10%' }}
+                style={{ width: `${progressPercentage}%` }}
               ></div>
             </div>
             
@@ -138,10 +108,26 @@ function CourseIntro({ studyMaterial, chapterlenght }: CourseIntroProps) {
             </div>
           </div>
         </div>
-        
+      </div>
+    </section>
+  );
+}
+
+
+interface MetadataCardProps {
+  label: string;
+  value: string;
+  icon: React.ReactNode;
+}
+
+function MetadataCard({ label, value, icon }: MetadataCardProps) {
+  return (
+    <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-100 flex flex-col">
+      <span className="text-xs text-gray-500 uppercase tracking-wider">{label}</span>
+      <div className="flex items-center mt-1">
+        {icon}
+        <span className="font-medium">{value}</span>
       </div>
     </div>
   );
 }
-
-export default CourseIntro;

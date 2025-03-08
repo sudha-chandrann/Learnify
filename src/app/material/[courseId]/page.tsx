@@ -43,6 +43,7 @@ async function StudyChaptersPage({ params }: PageProps) {
       id: courseId,
     },
   });
+  
   if (!studyMaterial) {
     return redirect("/generate");
   }
@@ -70,7 +71,7 @@ async function StudyChaptersPage({ params }: PageProps) {
 
       <CourseIntro
         studyMaterial={studyMaterial}
-        chapterlenght={chapters.length}
+        chaptersCount={chapters.length}
       />
       {/*Study Materials */}
       <StudyMaterial courseId={courseId}/>

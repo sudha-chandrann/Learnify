@@ -6,7 +6,6 @@ import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import dotenv from "dotenv";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-// import { Prisma } from "@prisma/client";
 
 dotenv.config();
 
@@ -32,7 +31,6 @@ export async function POST(req: Request) {
     // Extract data from the request body
     const body = await req.json();
     const { topic, difficultyLevel, materialType} = body;
-    console.log("the topic ares",topic,difficultyLevel,materialType)
     if (!topic || !difficultyLevel || !materialType) {
       return new NextResponse("Missing required fields", { status: 400 });
     }
@@ -83,9 +81,6 @@ export async function POST(req: Request) {
         status: "generating",
       },
     });
-
-    // Asynchronously generate content (we'll return immediately)
-    // generateContent(studyMaterial.id, contentTypes, materialLayout);
     
     return NextResponse.json({
       message: "Study material creation initiated",
@@ -98,81 +93,6 @@ export async function POST(req: Request) {
   }
 }
 
-// This function runs asynchronously after the response is sent
-// async function generateContent(
-//   studyMaterialId: string, 
-//   contentTypes: string[], 
-//   materialLayout: any
-// ) {
-//   try {
-//     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
-//     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-    
-//     // Generate chapters if requested
-//     if (contentTypes.includes("chapters")) {
-//       await generateChapters(studyMaterialId, materialLayout, model);
-//     }
-    
-//     // Generate flashcards if requested
-//     if (contentTypes.includes("flashcards")) {
-//       await generateFlashcards(studyMaterialId, materialLayout, model);
-//     }
-    
-//     // Generate quiz if requested
-//     if (contentTypes.includes("quiz")) {
-//       await generateQuiz(studyMaterialId, materialLayout, model);
-//     }
-    
-//     // Generate Q&A if requested
-//     if (contentTypes.includes("qa")) {
-//       await generateQA(studyMaterialId, materialLayout, model);
-//     }
-    
-//     // Update status to created when all content is generated
-//     await db.studyMaterial.update({
-//       where: { id: studyMaterialId },
-//       data: { status: "created" }
-//     });
-    
-//   } catch (error) {
-//     console.error("[Generate Content Error]", error);
-//     // Update status to error
-//     await db.studyMaterial.update({
-//       where: { id: studyMaterialId },
-//       data: { status: "error" }
-//     });
-//   }
-// }
-
-// async function generateChapters(studyMaterialId: string, materialLayout: any, model: any) {
-//   for (let i = 0; i < materialLayout.chapters.length; i++) {
-//     const chapter = materialLayout.chapters[i];
-    
-//     const prompt = `
-//       Generate detailed study notes for the chapter: "${chapter.chapter_name}".
-//       Chapter Summary: ${chapter.chapter_summary}.
-//       Topics Covered:
-//       - ${chapter.topics.join("\n- ")}
-      
-//       Provide structured and well-formatted content in a student-friendly way.
-//       Include examples, diagrams descriptions, and practice exercises where appropriate.
-//     `;
-    
-//     const chatSession = model.startChat({ history: [] });
-//     const result = await chatSession.sendMessage(prompt);
-//     let responseText = result.response.text();
-//     responseText = responseText.replace(/```json/g, "").replace(/```/g, "");
-    
-//     // Store the generated chapter notes in the database
-//     await db.studyChapter.create({
-//       data: {
-//         CourseId: studyMaterialId,
-//         notes: responseText,
-//         orderIndex: i,
-//       },
-//     });
-//   }
-// }
 
 // async function generateFlashcards(studyMaterialId: string, materialLayout: any, model: any) {
 //   // First create the flashcard set

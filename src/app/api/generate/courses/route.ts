@@ -51,41 +51,34 @@ export async function POST(req: Request) {
       return new NextResponse("No chapters found in study material", { status: 400 });
     }
 
-    const createdChapters = [];
+    for (let i = 0; i < materialLayout.chapters.length; i++) {
+          const chapter = materialLayout.chapters[i];
+          
+          const prompt = `
+            Generate detailed study notes for the chapter: "${chapter.chapter_name}".
+            Chapter Summary: ${chapter.chapter_summary}.
+            Topics Covered:
+            - ${chapter.topics.join("\n- ")}
+            
+            Provide structured and well-formatted content in a student-friendly way.
+            Include examples, diagrams descriptions, and practice exercises where appropriate.
+          `;
+          
+          const chatSession = model.startChat({ history: [] });
+          const result = await chatSession.sendMessage(prompt);
+          let responseText = result.response.text();
+          responseText = responseText.replace(/```json/g, "").replace(/```/g, "");
+          
+          // Store the generated chapter notes in the database
+          await db.studyChapter.create({
+            data: {
+              CourseId: courseId,
+              notes: responseText,
+              orderIndex: i,
+            },
+          });
 
-    for (const chapter of materialLayout.chapters) {
-      const prompt = `
-        Generate detailed study notes for the chapter: "${chapter.chapter_name}".
-        Chapter Summary: ${chapter.chapter_summary}.
-        Topics Covered:
-        - ${chapter.topics.join("\n- ")}
-
-        Provide structured and well-formatted content in a student-friendly way.
-      `;
-
-      const chatSession = model.startChat({ history: [] });
-      const result = await chatSession.sendMessage(prompt);
-      let responseText = result.response.text();
-      responseText = responseText.replace(/```json/g, "").replace(/```/g, "");
-
-      let aiGeneratedNotes;
-      try {
-        aiGeneratedNotes = responseText;
-      } catch (parseError) {
-        console.error("AI Response Parse Error:", parseError);
-        return new NextResponse("Invalid AI-generated response", { status: 500 });
-      }
-
-      // 🔹 Store the generated chapter notes in the database
-      const createdChapter = await db.studyChapter.create({
-        data: {
-          CourseId: courseId,
-          notes: aiGeneratedNotes,
-        },
-      });
-
-      createdChapters.push(createdChapter);
-    }
+        }
 
     // 🔹 Update the study material status to "created" after all chapters are generated
     await db.studyMaterial.update({
@@ -95,7 +88,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       message: "Chapters with AI-generated notes created successfully!",
-      chapters: createdChapters,
     });
   } catch (error) {
     console.error("[Create Study Chapters with AI]", error);

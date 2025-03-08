@@ -1,53 +1,68 @@
+
+"use client"
 import React from "react";
 import MaterialCardItem from "./MaterialCardItem";
 
-function StudyMaterial({ courseId }: { courseId: string }) {
+interface StudyMaterialProps {
+  courseId: string;
+}
 
+ 
+function StudyMaterial({ courseId }: StudyMaterialProps) {
   
-  const MaterialList = [
+  // Define the base materials that are available for all courses
+  const materialTypes = [
     {
+      id: "notes",
       name: "Notes/Chapters",
-      desc: "Read notes to prepare it",
-      iconType: "notes", // Changed to string identifier
-      path: `/material/${courseId}/notes`,
+      desc: "Read notes to prepare for your studies",
+      iconType: "notes",
+      basePath: `/material/${courseId}/notes`,
     },
     {
-      name: "Flashcard",
+      id: "flashcard",
+      name: "Flashcards",
       desc: "Flashcards help to remember the concepts",
-      iconType: "flashcard", // Changed to string identifier
-      path: `/material/${courseId}/flashcards`,
+      iconType: "flashcard",
+      basePath: `/material/${courseId}/flashcards`,
     },
     {
+      id: "quiz",
       name: "Quiz",
       desc: "Great way to test your knowledge",
-      iconType: "quiz", // Changed to string identifier
-      path: `/material/${courseId}/quiz`,
+      iconType: "quiz",
+      basePath: `/material/${courseId}/quiz`,
     },
     {
+      id: "question",
       name: "Question/Answer",
       desc: "Help to practice your learning",
-      iconType: "question", // Changed to string identifier
-      path: `/material/${courseId}/answer`,
+      iconType: "question",
+      basePath: `/material/${courseId}/answer`,
     },
   ];
 
+
   return (
-    <div className="my-3">
-      <h1 className="text-sky-600 text-xl font-bold text-center md:text-3xl">
+    <div className="my-6">
+      <h1 className="text-sky-600 text-xl font-bold text-center md:text-3xl mb-6">
         Study Material
       </h1>
-      <div className="grid gap-3 grid-cols-2 lg:grid-cols-4 mt-3">
-        {MaterialList.map((item, index) => (
-          <MaterialCardItem 
-            key={index} 
-            name={item.name} 
-            desc={item.desc} 
-            iconType={item.iconType} 
-            path={item.path} 
-            courseId={courseId}
-          />
-        ))}
-      </div>
+      
+
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          {materialTypes.map((item) => (
+            <MaterialCardItem
+              key={item.id}
+              name={item.name}
+              desc={item.desc}
+              iconType={item.iconType}
+              path={item.basePath}
+              courseId={courseId}
+            />
+          ))}
+        </div>
+  
     </div>
   );
 }
