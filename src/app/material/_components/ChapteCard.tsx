@@ -15,7 +15,7 @@ function ChapterCard({studyMaterial,courseId,chapter}:ChapterCardProps) {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const materialLayout = studyMaterial?.materialLayout as any;
-    const chapterData = materialLayout?.chapters[chapter.orderIndex+1] || {};
+    const chapterData = materialLayout?.chapters[chapter.orderIndex] || {};
     const chapterName =
       chapterData.chapter_name || `Chapter ${chapter.orderIndex +1}`;
     const chapterSummary =
@@ -26,7 +26,7 @@ function ChapterCard({studyMaterial,courseId,chapter}:ChapterCardProps) {
 
   return (
     <div
-    onClick={()=>{router.push(`material/${courseId}/notes/${chapter.id}`)}}
+    onClick={()=>{router.push(`/material/${courseId}/notes/${chapter.id}`)}}
     className="border border-gray-200 rounded-lg hover:border-blue-300 transition-all "
   >
 

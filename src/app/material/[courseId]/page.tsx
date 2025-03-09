@@ -1,38 +1,16 @@
 import { db } from "@/lib/db";
 import React from "react";
-import { Metadata } from "next";
-import { ArrowLeft, Delete, DeleteIcon, TrashIcon } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import CourseIntro from "../_components/CourseIntro";
 import StudyMaterial from "../_components/StudyMaterial";
 import ChapterCard from "../_components/ChapteCard";
-import { Button } from "@/components/ui/button";
+import DeleteButton from "../_components/DeleteButton";
 
 interface PageProps {
   params: {
     courseId: string;
-  };
-}
-
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
-  const studyMaterial = await db.studyMaterial.findUnique({
-    where: {
-      id: params.courseId,
-    },
-  });
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const materialLayout = studyMaterial?.materialLayout as any;
-
-  return {
-    title:
-      materialLayout?.course_name || studyMaterial?.topic || "Study Material",
-    description:
-      materialLayout?.course_summary ||
-      `${studyMaterial?.topic} study material`,
   };
 }
 
@@ -72,9 +50,7 @@ async function StudyChaptersPage({ params }: PageProps) {
           <ArrowLeft className="w-4 h-4 mr-1" />
           Back to Study Materials
         </Link>
-        <Button>
-        <TrashIcon/> Delete 
-        </Button>
+         <DeleteButton courseId={courseId}/>
       </div>
 
       <CourseIntro
