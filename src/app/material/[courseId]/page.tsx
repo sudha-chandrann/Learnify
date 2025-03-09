@@ -1,12 +1,13 @@
 import { db } from "@/lib/db";
 import React from "react";
 import { Metadata } from "next";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Delete, DeleteIcon, TrashIcon } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import CourseIntro from "../_components/CourseIntro";
 import StudyMaterial from "../_components/StudyMaterial";
 import ChapterCard from "../_components/ChapteCard";
+import { Button } from "@/components/ui/button";
 
 interface PageProps {
   params: {
@@ -44,7 +45,7 @@ async function StudyChaptersPage({ params }: PageProps) {
       id: courseId,
     },
   });
-  
+
   if (!studyMaterial) {
     return redirect("/generate");
   }
@@ -54,35 +55,41 @@ async function StudyChaptersPage({ params }: PageProps) {
     where: {
       CourseId: courseId,
     },
-    orderBy:{
-      orderIndex: 'asc',
-    }
+    orderBy: {
+      orderIndex: "asc",
+    },
   });
-
 
 
   return (
     <div className="container mx-auto py-8 px-[5%] lg:px-[10%]">
-      {/* Back button */}
-      <Link
-        href="/generate"
-        className="flex items-center text-sm text-sky-600 hover:text-sky-800 mb-6 "
-      >
-        <ArrowLeft className="w-4 h-4 mr-1" />
-        Back to Study Materials
-      </Link>
+      <div className="flex items-center justify-between mb-2">
+        {/* Back button */}
+        <Link
+          href="/generate"
+          className="flex items-center text-sm text-sky-600 hover:text-sky-800 mb-6 "
+        >
+          <ArrowLeft className="w-4 h-4 mr-1" />
+          Back to Study Materials
+        </Link>
+        <Button>
+        <TrashIcon/> Delete 
+        </Button>
+      </div>
 
       <CourseIntro
         studyMaterial={studyMaterial}
         chaptersCount={chapters.length}
       />
       {/*Study Materials */}
-      <StudyMaterial courseId={courseId}/>
+      <StudyMaterial courseId={courseId} />
 
       {/* Chapters list */}
       <div className="bg-white rounded-xl shadow-md overflow-hidden">
         <div className="p-6">
-          <h2 className="text-xl font-semibold mb-4 text-sky-600">Course Chapters/Notes</h2>
+          <h2 className="text-xl font-semibold mb-4 text-sky-600">
+            Course Chapters/Notes
+          </h2>
 
           {chapters.length === 0 ? (
             <div className="p-6 bg-gray-50 rounded-lg text-center">
@@ -93,7 +100,12 @@ async function StudyChaptersPage({ params }: PageProps) {
           ) : (
             <div className="space-y-4">
               {chapters.map((chapter) => (
-                <ChapterCard key={chapter.id} chapter={chapter} courseId={courseId} studyMaterial={studyMaterial}/>
+                <ChapterCard
+                  key={chapter.id}
+                  chapter={chapter}
+                  courseId={courseId}
+                  studyMaterial={studyMaterial}
+                />
               ))}
             </div>
           )}
