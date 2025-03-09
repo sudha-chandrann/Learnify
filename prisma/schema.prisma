@@ -176,7 +176,6 @@ model Flashcard {
   flashcardSet    FlashcardSet   @relation(fields: [flashcardSetId], references: [id], onDelete: Cascade)
   front           String         @db.Text
   back            String         @db.Text
-  tags            Json
   difficulty      Int            @default(1)  // 1-5 scale
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt

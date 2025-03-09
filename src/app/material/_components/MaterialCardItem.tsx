@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Book, FileText, HelpCircle, Layers, ArrowRight, Plus, Loader2 } from "lucide-react";
 import axios from "axios";
 import { cn } from "@/lib/utils"; 
+import toast from "react-hot-toast";
 
 interface MaterialCardItemProps {
   name: string;
@@ -79,7 +80,25 @@ function MaterialCardItem({
   
   // Handle material generation
   const handleGenerateMaterial = async () => {
-    console.log(`Generating ${iconType} material for course ${courseId}`);
+    try{
+      setIsGenerated(true)
+      let response;
+      if(iconType=="flashcard"){
+         response= await axios.post('/api/generate/flashcard',{courseId:courseId})
+      }
+      else{
+        response= await axios.post('/api/generate/quiz',{courseId:courseId})
+      }
+      console.log(response.data)
+      toast.success(response.data.message||"FlashCards are generated successfully")
+    }
+    catch(error){
+      console.error("Failed to generate material:", error);
+      toast.error("Failed to generate material");
+    }
+    finally{
+      setIsGenerated(false);
+    }
   };
 
   return (

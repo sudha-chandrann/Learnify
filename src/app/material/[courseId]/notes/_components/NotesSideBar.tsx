@@ -26,6 +26,7 @@ async function NotesSideBar({ courseId }: { courseId: string }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const materialLayout = studyMaterial?.materialLayout as any;
   const courseName = materialLayout?.course_name || studyMaterial?.topic || 'Untitled Course';
+
   return (
     <div className='h-full border-r flex flex-col overflow-y-auto shadow-md '>
       <div className='flex gap-x-2 p-4 items-center border-b'>
