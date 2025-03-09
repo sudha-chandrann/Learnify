@@ -6,11 +6,12 @@ import { TrashIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import toast from 'react-hot-toast';
+import ConfirmModel from "@/components/customui/ConfirmModel";
 
 function DeleteButton({courseId}:{courseId:string}) {
     const [isLoading, setIsLoading] = useState(false);
      const router= useRouter();
-    const deleteMaterials = async () => {
+    const handleDelete = async () => {
         try {
             setIsLoading(true);
             await axios.delete(`/api/generate/material/${courseId}`);
@@ -26,18 +27,19 @@ function DeleteButton({courseId}:{courseId:string}) {
         finally {
             setIsLoading(false);
         }
-    }
-     
+      };
+    
     return (
-        <Button 
-            onClick={deleteMaterials} 
-            disabled={isLoading} 
-            variant="destructive" 
-            className="flex items-center gap-2"
-        >
-            <TrashIcon size={16} />
-            {isLoading ? "Deleting..." : "Delete"}
+        <ConfirmModel
+        isCourse={true}
+        onConfirm={async () => {
+          handleDelete();
+        }}
+      >
+        <Button size="sm" disabled={isLoading}>
+          <TrashIcon className="w-4 h-4" />
         </Button>
+      </ConfirmModel>
     )
 }
 
