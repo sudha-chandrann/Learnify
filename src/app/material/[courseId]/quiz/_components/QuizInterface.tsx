@@ -25,8 +25,7 @@ export default function QuizInterface({ quiz,questionlenght }: QuizInterfaceProp
     try {
       setislloading(true)
       const response = await axios.get(`/api/generate/quiz/${quiz.id}`);
-      const data = response.data.quizAttempt;
-      console.log(data);
+      const data = response.data;
       toast.success(" the quiz attempt is created successfully")
       router.push(`/material/${quiz.studyMaterialId}/quiz/${quiz.id}/${data.id}`);
     } catch (error) {

@@ -248,6 +248,8 @@ model QuizResponse {
 
   @@index([attemptId])
   @@index([questionId])
+  @@unique([attemptId, questionId])
+
 }
 
 model QACollection {
