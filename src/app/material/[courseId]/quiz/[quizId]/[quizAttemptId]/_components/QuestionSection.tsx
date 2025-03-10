@@ -1,9 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-'use client';
-import { db } from '@/lib/db';
-import axios from 'axios';
-import React, { useState, useEffect } from 'react';
-import toast from 'react-hot-toast';
+"use client";
+
+import { db } from "@/lib/db";
+import axios from "axios";
+import React, { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 interface QuestionSectionProps {
   question: QuizQuestion;
@@ -25,26 +26,36 @@ interface QuizQuestion {
   orderIndex: number;
 }
 
-function QuestionSection({ question, attemptId, questionsLength, isCompleted }: QuestionSectionProps) {
+function QuestionSection({
+  question,
+  attemptId,
+  questionsLength,
+  isCompleted,
+}: QuestionSectionProps) {
   if (!question) return null;
-  
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
-  // Fetch existing response when component mounts
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  // Fetch existing response when component mounts or question changes
   useEffect(() => {
+    let isMounted = true;
+
     const fetchExistingResponse = async () => {
       try {
         const response = await db.quizResponse.findUnique({
-            where: {
-                attemptId_questionId: {
-                    attemptId,
-                    questionId: question.id,
-                }
-            }
+          where: {
+            attemptId_questionId: {
+              attemptId,
+              questionId: question.id,
+            },
+          },
         });
-        if (response?.userAnswer) {
+
+        if (isMounted && response?.userAnswer) {
           setSelectedOption(response.userAnswer);
+        } else if (isMounted) {
+          setSelectedOption(null);
         }
       } catch (error) {
         console.error("Failed to fetch existing response:", error);
@@ -52,23 +63,31 @@ function QuestionSection({ question, attemptId, questionsLength, isCompleted }: 
     };
 
     fetchExistingResponse();
+
+    return () => {
+      isMounted = false;
+    };
   }, [attemptId, question.id]);
 
   const handleAnswerChange = async (answer: string) => {
+    if (isLoading || isCompleted) return;
+
     setSelectedOption(answer);
     setIsLoading(true);
-    
-    try {
-      await axios.post(`/api/generate/quiz/${question.quizId}/${attemptId}/${question.id}`, {
-        answer: answer
-      });
-      toast.success(" the answer is submitted successfully")
 
+    try {
+      await axios.post(
+        `/api/generate/quiz/${question.quizId}/${attemptId}/${question.id}`,
+        {
+          answer: answer,
+        }
+      );
+      toast.success("Answer submitted successfully");
     } catch (error) {
       console.error("Failed to save answer:", error);
-    }
-    finally{
-        setIsLoading(false);
+      toast.error("Failed to save answer. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -78,35 +97,46 @@ function QuestionSection({ question, attemptId, questionsLength, isCompleted }: 
         Question {question.orderIndex + 1} of {questionsLength}
       </h3>
       <p className="text-lg mb-6">{question.questionText}</p>
-      
+
       {question.questionType === "MultipleChoice" && (
         <div className="space-y-3">
-          {Array.isArray(question.options) 
-            ? question.options.map((option: string, index: number) => (
-                <div key={index} className="flex items-center">
-                  <input
-                    type="radio"
-                    id={`option-${index}`}
-                    name={`question-${question.id}`}
-                    value={option}
-                    checked={selectedOption === option}
-                    onChange={() => handleAnswerChange(option)}
-                    className="mr-3"
-                    disabled={isCompleted || isLoading}
-                  />
-                  <label htmlFor={`option-${index}`} className="text-gray-800">{option}</label>
-                </div>
-              ))
-            : null}
+          {Array.isArray(question.options) ? (
+            question.options.map((option: string, index: number) => (
+              <div key={index} className="flex items-center">
+                <input
+                  type="radio"
+                  id={`option-${question.id}-${index}`}
+                  name={`question-${question.id}`}
+                  value={option}
+                  checked={selectedOption === option}
+                  onChange={() => handleAnswerChange(option)}
+                  className="mr-3"
+                  disabled={isCompleted || isLoading}
+                />
+                <label
+                  htmlFor={`option-${question.id}-${index}`}
+                  className={`text-gray-800 ${
+                    isCompleted || isLoading
+                      ? "cursor-not-allowed"
+                      : "cursor-pointer"
+                  }`}
+                >
+                  {option}
+                </label>
+              </div>
+            ))
+          ) : (
+            <p className="text-red-500">No options available</p>
+          )}
         </div>
       )}
-      
+
       {question.questionType === "TrueFalse" && (
         <div className="space-y-3">
           <div className="flex items-center">
             <input
               type="radio"
-              id="true-option"
+              id={`true-option-${question.id}`}
               name={`question-${question.id}`}
               value="True"
               checked={selectedOption === "True"}
@@ -114,12 +144,21 @@ function QuestionSection({ question, attemptId, questionsLength, isCompleted }: 
               className="mr-3"
               disabled={isCompleted || isLoading}
             />
-            <label htmlFor="true-option" className="text-gray-800">True</label>
+            <label
+              htmlFor={`true-option-${question.id}`}
+              className={`text-gray-800 ${
+                isCompleted || isLoading
+                  ? "cursor-not-allowed"
+                  : "cursor-pointer"
+              }`}
+            >
+              True
+            </label>
           </div>
           <div className="flex items-center">
             <input
               type="radio"
-              id="false-option"
+              id={`false-option-${question.id}`}
               name={`question-${question.id}`}
               value="False"
               checked={selectedOption === "False"}
@@ -127,16 +166,25 @@ function QuestionSection({ question, attemptId, questionsLength, isCompleted }: 
               className="mr-3"
               disabled={isCompleted || isLoading}
             />
-            <label htmlFor="false-option" className="text-gray-800">False</label>
+            <label
+              htmlFor={`false-option-${question.id}`}
+              className={`text-gray-800 ${
+                isCompleted || isLoading
+                  ? "cursor-not-allowed"
+                  : "cursor-pointer"
+              }`}
+            >
+              False
+            </label>
           </div>
         </div>
       )}
-      
+
       {question.questionType === "FillInBlank" && (
         <div>
           <input
             type="text"
-            value={selectedOption || ''}
+            value={selectedOption || ""}
             onChange={(e) => handleAnswerChange(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded"
             placeholder="Enter your answer"
@@ -144,7 +192,7 @@ function QuestionSection({ question, attemptId, questionsLength, isCompleted }: 
           />
         </div>
       )}
-      
+
       {isLoading && (
         <div className="mt-2 text-blue-500">Saving your answer...</div>
       )}

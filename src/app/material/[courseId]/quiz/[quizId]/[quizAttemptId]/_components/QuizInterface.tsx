@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import QuestionSection from "./QuestionSection";
 import axios from "axios";
+import QuestionNavigator from "./QuestionNavigator";
 
 // Update the type definition to match your Prisma models
 interface QuizAttempt {
@@ -41,11 +42,9 @@ interface QuizAttemptProps {
   quizAttempt: QuizAttempt;
 }
 
-export default function QuizInterface({
-  quizAttempt,
-}: QuizAttemptProps) {
+export default function QuizInterface({ quizAttempt }: QuizAttemptProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
-  const [question, setquestion] = useState<QuizQuestion>(
+  const [currentQuestion, setCurrentQuestion] = useState<QuizQuestion>(
     quizAttempt.quiz.questions[currentQuestionIndex]
   );
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -55,29 +54,31 @@ export default function QuizInterface({
   const handleSubmitQuiz = async () => {
     try {
       setIsSubmitting(true);
-      const response= await axios.get(`/api/generate/quiz/${quizAttempt.quiz.id}/${quizAttempt.id}`);
-      const data = response.data;
-      console.log(" the data is ",data)
+      const response = await axios.get(
+        `/api/generate/quiz/${quizAttempt.quiz.id}/${quizAttempt.id}`
+      );
+      console.log("Quiz submission response:", response.data);
     } catch (error) {
-      console.log(error);
+      console.error("Error submitting quiz:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  useEffect(() => {
+    setCurrentQuestion(quizAttempt.quiz.questions[currentQuestionIndex]);
+  }, [currentQuestionIndex, quizAttempt.quiz.questions]);
 
   const handleNext = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
     }
-    setquestion(quizAttempt.quiz.questions[currentQuestionIndex]);
   };
 
   const handlePrevious = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex((prev) => prev - 1);
     }
-    setquestion(quizAttempt.quiz.questions[currentQuestionIndex]);
   };
 
   return (
@@ -87,8 +88,6 @@ export default function QuizInterface({
         <p className="text-gray-600 mb-6">{quizAttempt.quiz.description}</p>
       )}
 
-
-
       {/* Progress bar */}
       <div className="w-full bg-gray-200 rounded-full h-2.5 mb-6">
         <div
@@ -96,11 +95,12 @@ export default function QuizInterface({
           style={{
             width: `${((currentQuestionIndex + 1) / questions.length) * 100}%`,
           }}
+          aria-label={`Progress: ${currentQuestionIndex + 1} of ${questions.length} questions`}
         ></div>
       </div>
 
       <QuestionSection
-        question={question}
+        question={currentQuestion}
         questionsLength={quizAttempt.quiz.questions.length}
         attemptId={quizAttempt.id}
         isCompleted={isCompleted}
@@ -115,6 +115,7 @@ export default function QuizInterface({
               ? "bg-gray-300 cursor-not-allowed"
               : "bg-gray-500 text-white hover:bg-gray-600"
           }`}
+          aria-label="Previous question"
         >
           Previous
         </button>
@@ -129,18 +130,20 @@ export default function QuizInterface({
                   ? "bg-gray-300 cursor-not-allowed"
                   : "bg-sky-500 text-white hover:bg-sky-600"
               }`}
+              aria-label="Next question"
             >
               Next
             </button>
           ) : (
             <button
-              onClick={() => handleSubmitQuiz()}
+              onClick={handleSubmitQuiz}
               disabled={isSubmitting || isCompleted}
               className={`px-4 py-2 rounded ${
                 isSubmitting || isCompleted
                   ? "bg-gray-300 cursor-not-allowed"
                   : "bg-green-500 text-white hover:bg-green-600"
               }`}
+              aria-label="Submit quiz"
             >
               {isSubmitting ? "Submitting..." : "Submit Quiz"}
             </button>
@@ -153,17 +156,14 @@ export default function QuizInterface({
         <h3 className="text-lg font-semibold mb-3">Questions</h3>
         <div className="flex flex-wrap gap-2">
           {questions.map((question) => (
-            <button
+            <QuestionNavigator
               key={question.id}
-              onClick={() =>{ setCurrentQuestionIndex(question.orderIndex);  setquestion(quizAttempt.quiz.questions[currentQuestionIndex]) }}
-              className={`w-10 h-10 flex items-center justify-center rounded-full 
-                ${currentQuestionIndex === question.orderIndex 
-                  ? 'bg-sky-500 text-white'            
-                  : 'bg-gray-200 text-gray-800'
-                }`}
-            >
-              {question.orderIndex + 1}
-            </button>
+              questionId={question.id}
+              attemptId={quizAttempt.id}
+              currentQuestionIndex={currentQuestionIndex}
+              orderIndex={question.orderIndex}
+              onclick={(orderIndex) => setCurrentQuestionIndex(orderIndex)}
+            />
           ))}
         </div>
       </div>
