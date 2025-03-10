@@ -86,8 +86,11 @@ function MaterialCardItem({
       if(iconType=="flashcard"){
          response= await axios.post('/api/generate/flashcard',{courseId:courseId})
       }
-      else{
+      else if(iconType=="quiz"){
         response= await axios.post('/api/generate/quiz',{courseId:courseId})
+      }
+      else{
+        response= await axios.post('/api/generate/question',{courseId:courseId})
       }
       console.log(response.data)
       toast.success(response.data.message||"FlashCards are generated successfully")

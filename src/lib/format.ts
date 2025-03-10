@@ -15,3 +15,13 @@ export const formatDate = (date: Date | null | undefined) => {
       day: 'numeric'
     });
   };
+
+
+  export function formatTime(seconds: number): string {
+    if (seconds === null || seconds === undefined) return '00:00';
+    
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    
+    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+  }

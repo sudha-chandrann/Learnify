@@ -1,5 +1,7 @@
 import { db } from "@/lib/db";
 import FlashcardStudy from "./_components/FlashcardStudy";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 async function FlashcardsPage({ params }: { params: { courseId: string } }) {
     const { courseId } = params;
     
@@ -24,6 +26,14 @@ async function FlashcardsPage({ params }: { params: { courseId: string } }) {
     if (!flashcardSet) {
       return (
         <div className="p-8 max-w-4xl mx-auto">
+                  {/* Back button */}
+        <Link
+          href={`/material/${courseId}`}
+          className="flex items-center text-sm text-sky-600 hover:text-sky-800 mb-6 "
+        >
+          <ArrowLeft className="w-4 h-4 mr-1" />
+          Back to Study Materials
+        </Link>
           <div className="bg-white rounded-lg shadow p-6 text-center">
             <h1 className="text-2xl font-bold mb-4">No Flashcards Available</h1>
             <p className="text-gray-600 mb-6">
@@ -42,6 +52,15 @@ async function FlashcardsPage({ params }: { params: { courseId: string } }) {
   
     return (
       <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
+        <div className=" flex items-center justify-between">
+        <Link
+          href={`/material/${courseId}`}
+          className="flex items-center text-sm text-sky-600 hover:text-sky-800 mb-6 "
+        >
+          <ArrowLeft className="w-4 h-4 mr-1" />
+          Back to Study Materials
+        </Link>
+        </div>
         <FlashcardStudy
           flashcardSet={flashcardSet} 
           flashcards={flashcards} 

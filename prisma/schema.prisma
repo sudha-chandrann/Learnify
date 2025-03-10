@@ -225,7 +225,7 @@ model QuizAttempt {
   quizId          String
   quiz            Quiz           @relation(fields: [quizId], references: [id], onDelete: Cascade)
   userId          String
-  score           Float
+  score           Float          @default(0)
   maxScore        Float
   completed       Boolean        @default(false)
   startedAt       DateTime       @default(now())
