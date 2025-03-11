@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from "@/components/ui/button";
-import { db } from "@/lib/db";
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 
 interface QuestionNavigatorProps {
@@ -10,6 +10,7 @@ interface QuestionNavigatorProps {
   currentQuestionIndex: number;
   orderIndex: number;
   onclick: (orderIndex: number) => void;
+  answerUpdateKey: number;
 }
 
 function QuestionNavigator({
@@ -17,35 +18,39 @@ function QuestionNavigator({
   orderIndex,
   onclick,
   attemptId,
-  questionId
+  questionId,
+  answerUpdateKey
 }: QuestionNavigatorProps) {
   const [isAnswered, setIsAnswered] = useState<boolean>(false);
-  
-
-
-  
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+      
   useEffect(() => {
     let isMounted = true;
     
     const fetchExistingResponse = async () => {
+      if (!isMounted) return;
+      
       try {
-        const response = await db.quizResponse.findUnique({
-          where: {
-            attemptId_questionId: {
-              attemptId,
-              questionId,
-            }
-          }
-        });
+        setIsLoading(true);
+        // Replace the direct db call with an API endpoint call
+        const response = await axios.get(
+          `/api/quiz-response/${attemptId}/${questionId}`
+        );
         
         // Only update state if component is still mounted
         if (isMounted) {
           // Check if response exists AND has a userAnswer property that's not empty
-          setIsAnswered(!!response && !!response.userAnswer && response.userAnswer.trim() !== '');
+          setIsAnswered(
+            !!response.data && 
+            !!response.data.userAnswer && 
+            response.data.userAnswer.trim() !== ''
+          );
         }
       } catch (error) {
         console.error("Failed to fetch existing response:", error);
         if (isMounted) setIsAnswered(false);
+      } finally {
+        if (isMounted) setIsLoading(false);
       }
     };
     
@@ -55,7 +60,7 @@ function QuestionNavigator({
     return () => {
       isMounted = false;
     };
-  }, [attemptId, questionId]);
+  }, [attemptId, questionId,answerUpdateKey]);
   
   const handleClick = () => {
     onclick(orderIndex);
@@ -65,6 +70,7 @@ function QuestionNavigator({
     <Button
       type="button"
       onClick={handleClick}
+      disabled={isLoading}
       className={`w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-300 hover:text-white ${
         currentQuestionIndex === orderIndex
           ? "bg-sky-500 text-white"

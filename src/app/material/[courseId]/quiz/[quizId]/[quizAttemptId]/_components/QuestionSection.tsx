@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
-import { db } from "@/lib/db";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
@@ -11,6 +10,7 @@ interface QuestionSectionProps {
   attemptId: string;
   questionsLength: number;
   isCompleted: boolean;
+  onAnswerUpdated: () => void;
 }
 
 interface QuizQuestion {
@@ -31,42 +31,37 @@ function QuestionSection({
   attemptId,
   questionsLength,
   isCompleted,
+  onAnswerUpdated
 }: QuestionSectionProps) {
   if (!question) return null;
-
+  
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
+  const [isfetching,setisfetching]=useState<boolean>(false);
   // Fetch existing response when component mounts or question changes
   useEffect(() => {
-    let isMounted = true;
-
     const fetchExistingResponse = async () => {
       try {
-        const response = await db.quizResponse.findUnique({
-          where: {
-            attemptId_questionId: {
-              attemptId,
-              questionId: question.id,
-            },
-          },
-        });
-
-        if (isMounted && response?.userAnswer) {
-          setSelectedOption(response.userAnswer);
-        } else if (isMounted) {
+        setisfetching(true);
+        // Replace the direct db call with an API endpoint call
+        const response = await axios.get(
+          `/api/quiz-response/${attemptId}/${question.id}`
+        );
+        
+        if (response.data && response.data.userAnswer) {
+          setSelectedOption(response.data.userAnswer);
+        } else {
           setSelectedOption(null);
         }
       } catch (error) {
         console.error("Failed to fetch existing response:", error);
+        setSelectedOption(null);
+      } finally {
+        setisfetching(false);
       }
     };
 
     fetchExistingResponse();
-
-    return () => {
-      isMounted = false;
-    };
   }, [attemptId, question.id]);
 
   const handleAnswerChange = async (answer: string) => {
@@ -83,6 +78,7 @@ function QuestionSection({
         }
       );
       toast.success("Answer submitted successfully");
+      onAnswerUpdated();
     } catch (error) {
       console.error("Failed to save answer:", error);
       toast.error("Failed to save answer. Please try again.");
@@ -90,7 +86,7 @@ function QuestionSection({
       setIsLoading(false);
     }
   };
-
+ 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <h3 className="text-xl font-semibold mb-4">
@@ -111,7 +107,7 @@ function QuestionSection({
                   checked={selectedOption === option}
                   onChange={() => handleAnswerChange(option)}
                   className="mr-3"
-                  disabled={isCompleted || isLoading}
+                  disabled={isCompleted || isLoading|| isfetching}
                 />
                 <label
                   htmlFor={`option-${question.id}-${index}`}
@@ -142,7 +138,7 @@ function QuestionSection({
               checked={selectedOption === "True"}
               onChange={() => handleAnswerChange("True")}
               className="mr-3"
-              disabled={isCompleted || isLoading}
+              disabled={isCompleted || isLoading|| isfetching}
             />
             <label
               htmlFor={`true-option-${question.id}`}
@@ -164,7 +160,7 @@ function QuestionSection({
               checked={selectedOption === "False"}
               onChange={() => handleAnswerChange("False")}
               className="mr-3"
-              disabled={isCompleted || isLoading}
+              disabled={isCompleted || isLoading|| isfetching}
             />
             <label
               htmlFor={`false-option-${question.id}`}
@@ -188,7 +184,7 @@ function QuestionSection({
             onChange={(e) => handleAnswerChange(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded"
             placeholder="Enter your answer"
-            disabled={isCompleted || isLoading}
+            disabled={isCompleted || isLoading|| isfetching}
           />
         </div>
       )}

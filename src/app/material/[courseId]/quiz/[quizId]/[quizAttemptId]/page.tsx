@@ -33,6 +33,7 @@ async function Page({ params }: PageParams) {
   }
 
 
+
   return (
     <div className="py-8">
         <QuizInterface quizAttempt={quizAttempt}  />

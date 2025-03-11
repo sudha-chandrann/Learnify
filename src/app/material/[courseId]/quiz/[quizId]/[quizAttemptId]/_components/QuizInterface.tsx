@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import QuestionSection from "./QuestionSection";
 import axios from "axios";
 import QuestionNavigator from "./QuestionNavigator";
+import QuizStats from "./QuizStats";
 
 // Update the type definition to match your Prisma models
 interface QuizAttempt {
@@ -48,8 +49,15 @@ export default function QuizInterface({ quizAttempt }: QuizAttemptProps) {
     quizAttempt.quiz.questions[currentQuestionIndex]
   );
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [answerUpdateKey, setAnswerUpdateKey] = useState<number>(0);
   const questions = quizAttempt.quiz.questions;
   const isCompleted = quizAttempt.completed;
+
+
+    // Function to call when an answer is updated
+  const handleAnswerUpdated = () => {
+    setAnswerUpdateKey(prev => prev + 1); // Increment the key to trigger re-render
+  };
 
   const handleSubmitQuiz = async () => {
     try {
@@ -87,6 +95,14 @@ export default function QuizInterface({ quizAttempt }: QuizAttemptProps) {
       {quizAttempt.quiz.description && (
         <p className="text-gray-600 mb-6">{quizAttempt.quiz.description}</p>
       )}
+            {/* Add the Quiz Stats component */}
+      <QuizStats
+        attemptId={quizAttempt.id}
+        questionsCount={questions.length}
+        timeLimit={quizAttempt.quiz.timeLimit}
+        startedAt={quizAttempt.startedAt}
+        answerUpdateKey={answerUpdateKey}
+      />
 
       {/* Progress bar */}
       <div className="w-full bg-gray-200 rounded-full h-2.5 mb-6">
@@ -104,6 +120,7 @@ export default function QuizInterface({ quizAttempt }: QuizAttemptProps) {
         questionsLength={quizAttempt.quiz.questions.length}
         attemptId={quizAttempt.id}
         isCompleted={isCompleted}
+        onAnswerUpdated={handleAnswerUpdated} 
       />
 
       <div className="mt-8 flex justify-between">
@@ -163,6 +180,7 @@ export default function QuizInterface({ quizAttempt }: QuizAttemptProps) {
               currentQuestionIndex={currentQuestionIndex}
               orderIndex={question.orderIndex}
               onclick={(orderIndex) => setCurrentQuestionIndex(orderIndex)}
+              answerUpdateKey={answerUpdateKey}
             />
           ))}
         </div>
