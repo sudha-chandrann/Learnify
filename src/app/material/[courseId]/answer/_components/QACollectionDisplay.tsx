@@ -2,9 +2,11 @@
 
 import { QACollection, QAPair } from "@prisma/client";
 import { useState, useMemo } from "react";
-import { BookOpen } from "lucide-react";
+import { ArrowLeft, BookOpen } from "lucide-react";
 import QuestionCard from "./QuestionCard";
 import CategoryFilter from "./CategoryFilter";
+import Link from "next/link";
+import DeleteButton from "./DeleteButton";
 
 interface QACollectionDisplayProps {
   qacollection: QACollection;
@@ -63,6 +65,16 @@ function QACollectionDisplay({
 
   return (
     <div className="space-y-6 lg:mx-[10%] md:mx-[5%] mx-[3%]">
+      <div className="flex items-center justify-between">
+      <Link
+          href={`/material/${qacollection.studyMaterialId}`}
+          className="flex items-center text-sm text-sky-600 hover:text-sky-800 mb-6 "
+        >
+          <ArrowLeft className="w-4 h-4 mr-1" />
+          Back to Study Materials
+        </Link>
+        <DeleteButton courseId={qacollection.studyMaterialId}/>
+      </div>
       {/* Header */}
       <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
         <div className="flex items-center gap-3">

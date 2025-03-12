@@ -36,7 +36,7 @@ function DeleteButton({courseId}:{courseId:string}) {
           handleDelete();
         }}
       >
-        <Button size="sm" disabled={isLoading}>
+        <Button size="sm" disabled={isLoading} variant="destructive">
           <TrashIcon className="w-4 h-4" />
         </Button>
       </ConfirmModel>

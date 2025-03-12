@@ -13,6 +13,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import QuizInterface from '../_components/QuizInterface';
 import QuizAttemptCard from '../_components/QuizAttemptCard';
+import DeleteButton from '../_components/QuizDeleteButton';
 
 async function Page({ params }: { params: { courseId: string, quizId: string } }) {
   const { courseId, quizId } = params;
@@ -54,13 +55,14 @@ async function Page({ params }: { params: { courseId: string, quizId: string } }
   
   return (
     <div className="container mx-auto py-8 max-w-4xl">
-      <div className="mb-6">
+      <div className="mb-6 flex items-center justify-between">
         <Link href={`/material/${courseId}`}>
           <Button variant="outline" size="sm">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Study Materials
           </Button>
         </Link>
+        <DeleteButton courseId={courseId}/>
       </div>
       
       <Card>

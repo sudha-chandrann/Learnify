@@ -81,33 +81,6 @@ export default function CourseIntro({ studyMaterial, chaptersCount }: CourseIntr
           </div>
         </div>
         
-        {/* Course progress tracking */}
-        <div className="mt-8">
-          <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
-            <div className="flex justify-between items-center mb-3">
-              <div className="flex items-center">
-                <CheckCircle className="w-5 h-5 mr-2 text-sky-600" />
-                <span className="text-gray-800 font-semibold">Your Progress</span>
-              </div>
-              <div className="bg-blue-50 px-3 py-1 rounded-full">
-                <span className="text-sky-700 font-medium">{completedChapters}/{chaptersCount} completed</span>
-              </div>
-            </div>
-            
-            <div className="w-full bg-gray-100 rounded-full h-3">
-              <div 
-                className="bg-gradient-to-r from-sky-500 to-purple-600 h-3 rounded-full transition-all duration-500 ease-in-out" 
-                style={{ width: `${progressPercentage}%` }}
-              ></div>
-            </div>
-            
-            <div className="flex justify-between mt-3 text-xs text-gray-500">
-              <span>Just Started</span>
-              <span>In Progress</span>
-              <span>Completed</span>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );
