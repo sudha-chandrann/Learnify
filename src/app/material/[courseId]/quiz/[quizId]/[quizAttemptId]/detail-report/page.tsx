@@ -54,7 +54,11 @@ async function QuizResultsPage({ params }: PageProps) {
   const unansweredQuestions = totalQuestions - answeredQuestions;
 
   return (
-    <div className="container mx-auto py-10 px-5 md:px-[5%] lg:px-[10%]">
+    <div className="container mx-auto py-10 px-5 md:px-[5%console.log('QuizResultsPage params:', params);
+console.log('Quiz attempt data:', quizAttempt);
+console.log('Percentage score:', percentageScore);
+console.log('Is passed:', isPassed);
+console.log('Stats:', totalQuestions, answeredQuestions, correctAnswers, unansweredQuestions);] lg:px-[10%]">
       <div className="mb-8">
         <h1 className="text-2xl font-bold mb-2">{quizAttempt.quiz.title} - Results</h1>
         <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">

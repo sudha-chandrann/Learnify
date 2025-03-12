@@ -12,15 +12,16 @@ import {
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import QuizInterface from '../_components/QuizInterface';
+import QuizAttemptCard from '../_components/QuizAttemptCard';
 
-async function Page({ params }: { params: { courseId: string } }) {
-  const { courseId } = params;
+async function Page({ params }: { params: { courseId: string, quizId: string } }) {
+  const { courseId, quizId } = params;
   const { userId } = await auth();
-
+  
   if (!userId) {
     return redirect("/");
   }
-
+  
   const quiz = await db.quiz.findUnique({
     where: {
       studyMaterialId: courseId,
@@ -33,13 +34,24 @@ async function Page({ params }: { params: { courseId: string } }) {
       }
     }
   });
-
+  
   if (!quiz) {
-    return  redirect(`/material/${courseId}`)
+    return redirect(`/material/${courseId}`);
   }
+  
   const maxScore = quiz.questions.reduce((total, question) => total + question.points, 0);
-
-
+  
+  const quizAttempts = await db.quizAttempt.findMany({
+    where: {
+      quizId: quizId,
+      userId: userId,
+      completed: true
+    },
+    orderBy: {
+      completedAt: "desc"
+    }
+  });
+  
   return (
     <div className="container mx-auto py-8 max-w-4xl">
       <div className="mb-6">
@@ -50,7 +62,7 @@ async function Page({ params }: { params: { courseId: string } }) {
           </Button>
         </Link>
       </div>
-
+      
       <Card>
         <CardHeader>
           <CardTitle>{quiz.title}</CardTitle>
@@ -78,7 +90,7 @@ async function Page({ params }: { params: { courseId: string } }) {
                 </div>
               </CardContent>
             </Card>
-
+            
             <Card>
               <CardContent className="p-4">
                 <div className="font-medium text-sm mb-1">Passing Score:</div>
@@ -86,10 +98,35 @@ async function Page({ params }: { params: { courseId: string } }) {
               </CardContent>
             </Card>
           </div>
-
+          
           <QuizInterface quiz={quiz} questionlenght={quiz.questions.length} />
         </CardContent>
       </Card>
+      
+      {quizAttempts.length > 0 ? (
+        <div className="mt-8">
+          <h2 className="text-xl font-bold mb-4">Your Previous Attempts</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
+            {quizAttempts.map((attempt) => (
+              <QuizAttemptCard 
+                key={attempt.id}
+                attempt={attempt}
+                courseId={courseId}
+                quizId={quizId}
+                passingScore={quiz.passingScore}
+              />
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="mt-8">
+          <Card className="bg-gray-50">
+            <CardContent className="p-6 text-center">
+              <p className="text-gray-600">You haven&apos;t completed any quiz attempts yet.</p>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }

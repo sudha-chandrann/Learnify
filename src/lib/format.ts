@@ -16,6 +16,16 @@ export const formatDate = (date: Date | null | undefined) => {
     });
   };
 
+// Format date to time format
+export function formatTimeFromDate(dateString:Date) {
+  const date = new Date(dateString);
+  return date.toLocaleTimeString('en-US', { 
+    hour: '2-digit', 
+    minute: '2-digit'
+  });
+}
+
+
 
   export function formatTime(seconds: number): string {
     if (seconds === null || seconds === undefined) return '00:00';
@@ -28,7 +38,7 @@ export const formatDate = (date: Date | null | undefined) => {
 
 
   // Helper function to format time difference
-export default function formatTimeDifference(startDate: string | number | Date, endDate: string | number | Date) {
+export default function formatTimeDifference(startDate: string  | Date, endDate: string  | Date) {
   const start = new Date(startDate);
   const end = new Date(endDate);
   const diffMs = end - start;
@@ -38,5 +48,7 @@ export default function formatTimeDifference(startDate: string | number | Date, 
   
   return `${minutes}m ${seconds}s`;
 }
+
+
 
 
