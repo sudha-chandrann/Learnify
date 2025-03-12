@@ -1,5 +1,6 @@
 import { db } from '@/lib/db';
 import React from 'react'
+import QACollectionDisplay from './_components/QACollectionDisplay';
 
 async function page({params}:{params:{courseId:string}}) {
   const {courseId}=params;
@@ -7,14 +8,36 @@ async function page({params}:{params:{courseId:string}}) {
     where: {
       studyMaterialId:courseId
     },
-    include:{
-      qaPairs:true
+  })
+
+  if (!qacollection) {
+    return (
+      <div className="flex items-center justify-center min-h-[70vh]">
+        <div className="text-center p-8 rounded-lg bg-slate-50 shadow-sm">
+          <h2 className="text-2xl font-bold text-slate-800 mb-2">No Q&A Collection Found</h2>
+          <p className="text-slate-600">This course doesn&apos;t have any questions and answers yet.</p>
+        </div>
+      </div>
+    );
+  }
+  const qapairs= await db.qAPair.findMany({
+    where:{
+      collectionId:qacollection?.id
     }
   })
-  console.log(" the qa collection is ",qacollection)
+  if(qapairs.length<1){
+    return (
+    <div className="flex items-center justify-center min-h-[70vh]">
+      <div className="text-center p-8 rounded-lg bg-slate-50 shadow-sm">
+        <h2 className="text-2xl font-bold text-slate-800 mb-2">No Q&A Pairs Found</h2>
+        <p className="text-slate-600">This course doesn&apos;t have any questions and answers yet.</p>
+      </div>
+    </div>
+    )
+  }
   return (
-    <div>
-      
+    <div className="container mx-auto px-4 py-8">
+      <QACollectionDisplay qacollection={qacollection} qapairs={qapairs} />
     </div>
   )
 }
