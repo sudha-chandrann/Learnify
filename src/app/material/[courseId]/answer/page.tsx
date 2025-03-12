@@ -4,6 +4,7 @@ import QACollectionDisplay from "./_components/QACollectionDisplay";
 import Link from "next/link";
 import { ArrowLeft, BookOpen, Loader2 } from "lucide-react";
 import { redirect } from "next/navigation";
+import DeleteButton from "./_components/DeleteButton";
 
 async function page({ params }: { params: { courseId: string } }) {
   const { courseId } = params;
@@ -39,17 +40,21 @@ export default page;
 function PageHeader({ courseId }: { courseId: string; }) {
   return (
     <div className="mb-6 p-2 sm:p-4 max-w-4xl mx-auto">
+      <div className="flex items-center justify-between">
       <Link
         href={`/material/${courseId}`}
-        className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 transition-colors mb-4"
+        className="inline-flex items-center text-sm text-sky-600 hover:text-sky-800 transition-colors mb-4"
       >
         <ArrowLeft className="w-4 h-4 mr-1" />
         Back to StudyMaterial
       </Link>
+      <DeleteButton courseId={courseId}/>
+      </div>
+
       
       <div className="flex items-center gap-3 mb-8">
-        <div className="bg-blue-100 p-3 rounded-full">
-          <BookOpen className="w-6 h-6 text-blue-600" />
+        <div className="bg-sky-100 p-3 rounded-full">
+          <BookOpen className="w-6 h-6 text-sky-600" />
         </div>
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
           Practice Questions
@@ -77,7 +82,7 @@ function LoadingState({ courseId, }: { courseId: string}) {
             </h2>
             
             <div className="h-2 w-64 bg-gray-200 rounded-full overflow-hidden">
-              <div className="h-full bg-blue-500 rounded-full animate-pulse w-2/3"></div>
+              <div className="h-full bg-sky-500 rounded-full animate-pulse w-2/3"></div>
             </div>
             
             <p className="text-gray-600 max-w-md">

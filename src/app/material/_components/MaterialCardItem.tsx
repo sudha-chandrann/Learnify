@@ -2,9 +2,17 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Book, FileText, HelpCircle, Layers, ArrowRight, Plus, Loader2 } from "lucide-react";
+import {
+  Book,
+  FileText,
+  HelpCircle,
+  Layers,
+  ArrowRight,
+  Plus,
+  Loader2,
+} from "lucide-react";
 import axios from "axios";
-import { cn } from "@/lib/utils"; 
+import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 
 interface MaterialCardItemProps {
@@ -15,13 +23,12 @@ interface MaterialCardItemProps {
   courseId: string;
 }
 
-
 function MaterialCardItem({
   name,
   desc,
   iconType,
   path,
-  courseId
+  courseId,
 }: MaterialCardItemProps) {
   const [isGenerated, setIsGenerated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -33,7 +40,7 @@ function MaterialCardItem({
       try {
         const response = await axios.post("/api/generate/material", {
           courseid: courseId,
-          materialType: iconType
+          materialType: iconType,
         });
         setIsGenerated(response.data.isPresent);
       } catch (error) {
@@ -50,82 +57,124 @@ function MaterialCardItem({
   // Material type configurations
   const materialConfig = {
     notes: {
-      icon: <FileText className={`h-6 w-6 ${isGenerated ? "text-sky-600" : "text-gray-400"}`} />,
+      icon: (
+        <FileText
+          className={`h-6 w-6 ${
+            isGenerated ? "text-sky-600" : "text-gray-400"
+          }`}
+        />
+      ),
       border: isGenerated ? "border-sky-100" : "border-gray-200",
-      buttonBg: isGenerated ? "bg-sky-600 hover:bg-sky-700" : "bg-gray-100 hover:bg-gray-200",
-      buttonText: isGenerated ? "text-white" : "text-gray-700"
+      buttonBg: isGenerated
+        ? "bg-sky-600 hover:bg-sky-700"
+        : "bg-gray-100 hover:bg-gray-200",
+      buttonText: isGenerated ? "text-white" : "text-gray-700",
     },
     flashcard: {
-      icon: <Layers className={`h-6 w-6 ${isGenerated ? "text-purple-600" : "text-gray-400"}`} />,
+      icon: (
+        <Layers
+          className={`h-6 w-6 ${
+            isGenerated ? "text-purple-600" : "text-gray-400"
+          }`}
+        />
+      ),
       border: isGenerated ? "border-purple-100" : "border-gray-200",
-      buttonBg: isGenerated ? "bg-purple-600 hover:bg-purple-700" : "bg-gray-100 hover:bg-gray-200",
-      buttonText: isGenerated ? "text-white" : "text-gray-700"
+      buttonBg: isGenerated
+        ? "bg-purple-600 hover:bg-purple-700"
+        : "bg-gray-100 hover:bg-gray-200",
+      buttonText: isGenerated ? "text-white" : "text-gray-700",
     },
     quiz: {
-      icon: <Book className={`h-6 w-6 ${isGenerated ? "text-emerald-600" : "text-gray-400"}`} />,
+      icon: (
+        <Book
+          className={`h-6 w-6 ${
+            isGenerated ? "text-emerald-600" : "text-gray-400"
+          }`}
+        />
+      ),
       border: isGenerated ? "border-emerald-100" : "border-gray-200",
-      buttonBg: isGenerated ? "bg-emerald-600 hover:bg-emerald-700" : "bg-gray-100 hover:bg-gray-200",
-      buttonText: isGenerated ? "text-white" : "text-gray-700"
+      buttonBg: isGenerated
+        ? "bg-emerald-600 hover:bg-emerald-700"
+        : "bg-gray-100 hover:bg-gray-200",
+      buttonText: isGenerated ? "text-white" : "text-gray-700",
     },
     question: {
-      icon: <HelpCircle className={`h-6 w-6 ${isGenerated ? "text-amber-600" : "text-gray-400"}`} />,
+      icon: (
+        <HelpCircle
+          className={`h-6 w-6 ${
+            isGenerated ? "text-amber-600" : "text-gray-400"
+          }`}
+        />
+      ),
       border: isGenerated ? "border-amber-100" : "border-gray-200",
-      buttonBg: isGenerated ? "bg-amber-600 hover:bg-amber-700" : "bg-gray-100 hover:bg-gray-200",
-      buttonText: isGenerated ? "text-white" : "text-gray-700"
-    }
+      buttonBg: isGenerated
+        ? "bg-amber-600 hover:bg-amber-700"
+        : "bg-gray-100 hover:bg-gray-200",
+      buttonText: isGenerated ? "text-white" : "text-gray-700",
+    },
   };
-  
+
   // Get current material configuration or default to notes
-  const config = materialConfig[iconType as keyof typeof materialConfig] || materialConfig.notes;
-  
+  const config =
+    materialConfig[iconType as keyof typeof materialConfig] ||
+    materialConfig.notes;
+
   // Handle material generation
   const handleGenerateMaterial = async () => {
-    try{
-      setIsGenerated(true)
+    try {
+      setIsGenerated(true);
       let response;
-      if(iconType=="flashcard"){
-         response= await axios.post('/api/generate/flashcard',{courseId:courseId})
+      if (iconType == "flashcard") {
+        response = await axios.post("/api/generate/flashcard", {
+          courseId: courseId,
+        });
+      } else if (iconType == "quiz") {
+        response = await axios.post("/api/generate/quiz", {
+          courseId: courseId,
+        });
+      } else {
+        response = await axios.post("/api/generate/answer", {
+          courseId: courseId,
+        });
       }
-      else if(iconType=="quiz"){
-        response= await axios.post('/api/generate/quiz',{courseId:courseId})
-      }
-      else{
-        response= await axios.post('/api/generate/answer',{courseId:courseId})
-      }
-      console.log(response.data)
-      toast.success(response.data.message||"materials are generated successfully")
-    }
-    catch(error){
+      console.log(response.data);
+      toast.success(
+        response.data.message || "materials are generated successfully"
+      );
+    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const axiosError = error as any; // Properly handle Axios errors
+      toast.error(axiosError?.response?.data?.message || "Something went wrong" );
       console.error("Failed to generate material:", error);
-      toast.error("Failed to generate material");
-    }
-    finally{
+    } finally {
       setIsGenerated(false);
     }
   };
 
   return (
-    <div 
+    <div
       className={cn(
         "rounded-lg border p-4 transition-all duration-300 h-full flex flex-col",
         isGenerated ? config.border : "border-gray-200",
         "shadow-sm hover:shadow"
       )}
-  >
+    >
       <div className="mb-3">{config.icon}</div>
-      
-      <h3 className={cn(
-        "font-semibold mb-1 transition-colors duration-300",
-        isGenerated ? "text-gray-800" : "text-gray-700"
-      )}>
+
+      <h3
+        className={cn(
+          "font-semibold mb-1 transition-colors duration-300",
+          isGenerated ? "text-gray-800" : "text-gray-700"
+        )}
+      >
         {name}
       </h3>
-      
+
       <p className="text-sm text-gray-600 mb-4">{desc}</p>
-      
+
       <div className="mt-auto">
         {isLoading ? (
-          <button 
+          <button
             disabled
             className="w-full bg-gray-200 text-gray-500 py-2 px-3 rounded flex items-center justify-center text-sm"
           >
@@ -134,7 +183,7 @@ function MaterialCardItem({
           </button>
         ) : isGenerated ? (
           <Link href={path} className="no-underline w-full">
-            <button 
+            <button
               className={cn(
                 "w-full py-2 px-3 rounded flex items-center justify-center text-sm transition-colors",
                 config.buttonBg
@@ -145,7 +194,7 @@ function MaterialCardItem({
             </button>
           </Link>
         ) : (
-          <button 
+          <button
             onClick={handleGenerateMaterial}
             className={cn(
               "w-full py-2 px-3 rounded flex items-center justify-center text-sm transition-colors",

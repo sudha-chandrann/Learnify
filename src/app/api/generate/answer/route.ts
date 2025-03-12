@@ -14,7 +14,7 @@ export async function POST(req: Request) {
         const user = await currentUser();
 
         if (!user || !user.id) {
-            return new NextResponse("Unauthorized", { status: 401 });
+            return  NextResponse.json({message:"Unauthorized"}, { status: 401 });
         }
 
         const currentuser = await db.user.findUnique({
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
         });
 
         if (!currentuser) {
-            return new NextResponse("Unauthorized", { status: 401 });
+            return  NextResponse.json({message:"Unauthorized"}, { status: 401 });
         }
 
         // 🔹 Extract required data from the request body
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
         const { courseId } = body;
 
         if (!courseId) {
-            return new NextResponse("Missing course ID", { status: 400 });
+            return  NextResponse.json({message:"Missing course ID"}, { status: 400 });
         }
 
         // 🔹 Fetch the study material (course)
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
         });
 
         if (!studyMaterial) {
-            return new NextResponse("Study material not found", { status: 404 });
+            return  NextResponse.json({message:"Study material not found"}, { status: 404 });
         }
 
         // Check if the course already has a QA collection
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
         });
 
         if (existingQAcollection) {
-            return new NextResponse("QA collection already exists for this course", { status: 409 });
+            return  NextResponse.json({message:"QA collection already exists for this course"}, { status: 409 });
         }
 
         const materialLayout = studyMaterial?.materialLayout as Record<string, unknown> | null;
@@ -139,6 +139,6 @@ export async function POST(req: Request) {
         });
     } catch (error) {
         console.error("[Generate QA Collection with AI]", error);
-        return new NextResponse("Internal Server Error", { status: 500 });
+        return  NextResponse.json({message:"Internal Server Error"}, { status: 500 });
     }
 }
