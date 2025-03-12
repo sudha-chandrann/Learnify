@@ -38,16 +38,22 @@ export function formatTimeFromDate(dateString:Date) {
 
 
   // Helper function to format time difference
-export default function formatTimeDifference(startDate: string  | Date, endDate: string  | Date) {
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-  const diffMs = end - start;
+  export default function formatTimeDifference(startDate: string | Date, endDate: string | Date): string {
+    const start = new Date(startDate).getTime(); // Convert to timestamp
+    const end = new Date(endDate).getTime();     // Convert to timestamp
   
-  const minutes = Math.floor(diffMs / 60000);
-  const seconds = Math.floor((diffMs % 60000) / 1000);
+    if (isNaN(start) || isNaN(end)) {
+      throw new Error("Invalid date provided");
+    }
   
-  return `${minutes}m ${seconds}s`;
-}
+    const diffMs = end - start;
+    
+    const minutes = Math.floor(diffMs / 60000);
+    const seconds = Math.floor((diffMs % 60000) / 1000);
+    
+    return `${minutes}m ${seconds}s`;
+  }
+  
 
 
 
