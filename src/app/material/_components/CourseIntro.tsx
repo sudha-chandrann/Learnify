@@ -1,6 +1,6 @@
 import { formatDate } from '@/lib/format';
 import { StudyMaterial } from '@prisma/client';
-import { BarChart, BookOpen, Clock, Code, CheckCircle, Award } from 'lucide-react';
+import { BarChart, BookOpen, Clock, Code, Award } from 'lucide-react';
 import React from 'react';
 
 interface CourseIntroProps {
@@ -15,8 +15,6 @@ export default function CourseIntro({ studyMaterial, chaptersCount }: CourseIntr
   const courseName = materialLayout?.course_name || studyMaterial?.topic || 'Untitled Course';
   const courseSummary = materialLayout?.course_summary || 'No course description available.';
   
-  const completedChapters = 0;
-  const progressPercentage = chaptersCount > 0 ? (completedChapters / chaptersCount) * 100 : 0;
 
   //  Returns appropriate text color based on difficulty level
   const getDifficultyColor = (): string => {
