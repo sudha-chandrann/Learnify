@@ -20,7 +20,7 @@ function GeneratingButton({ courseid }: { courseid: string }) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {  
       console.error("Error during generating chapters", error);
-      toast.error(error?.response?.data?.message || "Something went wrong during generation");
+      toast.error(error?.response?.data?.error?.message || "Something went wrong during generation");
     } finally {
       setIsLoading(false);
     }

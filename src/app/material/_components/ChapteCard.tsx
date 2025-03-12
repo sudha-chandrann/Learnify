@@ -62,9 +62,9 @@ function ChapterCard({ courseId, chapter, orderIndex }: ChapterCardProps) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const axiosError = error as any; // Properly handle Axios errors
       toast.error(
-        axiosError?.response?.data?.message || "Something went wrong during generating chapter"
+        axiosError?.response?.data?.error?.message || "Something went wrong during generating chapter"
       );
-      console.log("the error generating chapter", error);
+      console.error("the error generating chapter", error);
     } finally {
       setLoading(false);
     }
