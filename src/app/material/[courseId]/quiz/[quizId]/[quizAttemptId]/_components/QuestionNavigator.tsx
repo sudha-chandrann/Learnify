@@ -32,14 +32,10 @@ function QuestionNavigator({
       
       try {
         setIsLoading(true);
-        // Replace the direct db call with an API endpoint call
         const response = await axios.get(
           `/api/quiz-response/${attemptId}/${questionId}`
         );
-        
-        // Only update state if component is still mounted
-        if (isMounted) {
-          // Check if response exists AND has a userAnswer property that's not empty
+                if (isMounted) {
           setIsAnswered(
             !!response.data && 
             !!response.data.userAnswer && 

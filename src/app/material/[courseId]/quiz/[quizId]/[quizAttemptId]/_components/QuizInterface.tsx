@@ -5,7 +5,19 @@ import QuestionSection from "./QuestionSection";
 import axios from "axios";
 import QuestionNavigator from "./QuestionNavigator";
 import QuizStats from "./QuizStats";
-
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 // Update the type definition to match your Prisma models
 interface QuizAttempt {
   id: string;
@@ -41,9 +53,13 @@ interface QuizQuestion {
 
 interface QuizAttemptProps {
   quizAttempt: QuizAttempt;
+  materialId: string;
 }
 
-export default function QuizInterface({ quizAttempt }: QuizAttemptProps) {
+export default function QuizInterface({
+  quizAttempt,
+  materialId,
+}: QuizAttemptProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [currentQuestion, setCurrentQuestion] = useState<QuizQuestion>(
     quizAttempt.quiz.questions[currentQuestionIndex]
@@ -52,20 +68,25 @@ export default function QuizInterface({ quizAttempt }: QuizAttemptProps) {
   const [answerUpdateKey, setAnswerUpdateKey] = useState<number>(0);
   const questions = quizAttempt.quiz.questions;
   const isCompleted = quizAttempt.completed;
+  const router = useRouter();
 
-
-    // Function to call when an answer is updated
+  // Function to call when an answer is updated
   const handleAnswerUpdated = () => {
-    setAnswerUpdateKey(prev => prev + 1); // Increment the key to trigger re-render
+    setAnswerUpdateKey((prev) => prev + 1); // Increment the key to trigger re-render
   };
 
   const handleSubmitQuiz = async () => {
     try {
       setIsSubmitting(true);
-      const response = await axios.get(
+      const response = await axios.post(
         `/api/generate/quiz/${quizAttempt.quiz.id}/${quizAttempt.id}`
       );
-      console.log("Quiz submission response:", response.data);
+      toast.success(" the quiz is submitted successfully");
+      if (response.data.success) {
+        router.push(
+          `/material/${materialId}/quiz/${quizAttempt.quizId}/${quizAttempt.id}/results`
+        );
+      }
     } catch (error) {
       console.error("Error submitting quiz:", error);
     } finally {
@@ -95,13 +116,15 @@ export default function QuizInterface({ quizAttempt }: QuizAttemptProps) {
       {quizAttempt.quiz.description && (
         <p className="text-gray-600 mb-6">{quizAttempt.quiz.description}</p>
       )}
-            {/* Add the Quiz Stats component */}
+      {/* Add the Quiz Stats component */}
       <QuizStats
         attemptId={quizAttempt.id}
         questionsCount={questions.length}
         timeLimit={quizAttempt.quiz.timeLimit}
         startedAt={quizAttempt.startedAt}
         answerUpdateKey={answerUpdateKey}
+        quizId={quizAttempt.quiz.id}
+        materialId={materialId}
       />
 
       {/* Progress bar */}
@@ -111,7 +134,9 @@ export default function QuizInterface({ quizAttempt }: QuizAttemptProps) {
           style={{
             width: `${((currentQuestionIndex + 1) / questions.length) * 100}%`,
           }}
-          aria-label={`Progress: ${currentQuestionIndex + 1} of ${questions.length} questions`}
+          aria-label={`Progress: ${currentQuestionIndex + 1} of ${
+            questions.length
+          } questions`}
         ></div>
       </div>
 
@@ -120,7 +145,7 @@ export default function QuizInterface({ quizAttempt }: QuizAttemptProps) {
         questionsLength={quizAttempt.quiz.questions.length}
         attemptId={quizAttempt.id}
         isCompleted={isCompleted}
-        onAnswerUpdated={handleAnswerUpdated} 
+        onAnswerUpdated={handleAnswerUpdated}
       />
 
       <div className="mt-8 flex justify-between">
@@ -152,18 +177,44 @@ export default function QuizInterface({ quizAttempt }: QuizAttemptProps) {
               Next
             </button>
           ) : (
-            <button
-              onClick={handleSubmitQuiz}
-              disabled={isSubmitting || isCompleted}
-              className={`px-4 py-2 rounded ${
-                isSubmitting || isCompleted
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-green-500 text-white hover:bg-green-600"
-              }`}
-              aria-label="Submit quiz"
-            >
-              {isSubmitting ? "Submitting..." : "Submit Quiz"}
-            </button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <button
+                  disabled={isSubmitting || isCompleted}
+                  className={`px-4 py-2 rounded ${
+                    isSubmitting || isCompleted
+                      ? "bg-gray-300 cursor-not-allowed"
+                      : "bg-green-500 text-white hover:bg-green-600"
+                  }`}
+                  aria-label="Submit quiz"
+                >
+                  Submit
+                </button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="text-black">
+                    Are you absolutely sure?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription className="text-black/70">
+                  After submission, your responses will be locked and cannot be modified or retrieved.
+
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel disabled={isSubmitting || isCompleted}>
+                    Cancel
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    className=" bg-sky-700 hover:bg-sky-800 text-white"
+                    onClick={handleSubmitQuiz}
+                    disabled={isSubmitting || isCompleted}
+                  >
+                    {isSubmitting ? "Submitting..." : "Submit Quiz"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           )}
         </div>
       </div>
