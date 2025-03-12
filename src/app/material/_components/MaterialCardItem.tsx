@@ -90,10 +90,10 @@ function MaterialCardItem({
         response= await axios.post('/api/generate/quiz',{courseId:courseId})
       }
       else{
-        response= await axios.post('/api/generate/question',{courseId:courseId})
+        response= await axios.post('/api/generate/answer',{courseId:courseId})
       }
       console.log(response.data)
-      toast.success(response.data.message||"FlashCards are generated successfully")
+      toast.success(response.data.message||"materials are generated successfully")
     }
     catch(error){
       console.error("Failed to generate material:", error);
