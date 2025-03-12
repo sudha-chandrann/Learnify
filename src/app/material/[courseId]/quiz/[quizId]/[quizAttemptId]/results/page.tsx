@@ -17,8 +17,8 @@ interface statsProps {
   completed: boolean;
 }
 
-const QuizAttemptResults = ({params}:{params:{quizAttemptId:string,courseId:string}}) => {
-  const { quizAttemptId,courseId } = params;
+const QuizAttemptResults = ({params}:{params:{quizAttemptId:string,courseId:string,quizId:string}}) => {
+  const { quizAttemptId,courseId ,quizId} = params;
   const [stats, setStats] = useState<statsProps| null>(null);
   const [loading, setLoading] = useState(true);
   const [iserror,setiserror]=useState(false);
@@ -258,7 +258,8 @@ const QuizAttemptResults = ({params}:{params:{quizAttemptId:string,courseId:stri
           {/* Action buttons */}
           <div className="mt-8 flex justify-center md:justify-end space-x-4">
             
-              <button className="px-6 py-2 bg-sky-600 text-white font-medium rounded-lg hover:bg-sky-700 transition-colors">
+              <button className="px-6 py-2 bg-sky-600 text-white font-medium rounded-lg hover:bg-sky-700 transition-colors"
+              onClick={()=>{ router.push(`/material/${courseId}/quiz/${quizId}/${quizAttemptId}/detail-report`)}}>
                 View Detailed Report
               </button>
             

@@ -31,7 +31,9 @@ async function Page({ params }: PageParams) {
   if (!quizAttempt) {
     return redirect(`/material/${courseId}/quiz/${quizId}`);
   }
-
+  if(quizAttempt.completed){
+    return redirect(`/material/${courseId}/quiz/${quizId}/${quizAttemptId}/results`)
+  }
 
 
   return (

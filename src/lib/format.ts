@@ -25,3 +25,18 @@ export const formatDate = (date: Date | null | undefined) => {
     
     return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
   }
+
+
+  // Helper function to format time difference
+export default function formatTimeDifference(startDate: string | number | Date, endDate: string | number | Date) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const diffMs = end - start;
+  
+  const minutes = Math.floor(diffMs / 60000);
+  const seconds = Math.floor((diffMs % 60000) / 1000);
+  
+  return `${minutes}m ${seconds}s`;
+}
+
+
