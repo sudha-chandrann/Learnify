@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     const { courseId } = body;
 
     if (!courseId) {
-      return  NextResponse.json({message:"Missing course ID"}, { status: 400 });
+      return NextResponse.json({ message: "Missing course ID" }, { status: 400 });
     }
 
     // 🔹 Fetch the study material (course)
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
     });
 
     if (!studyMaterial) {
-      return  NextResponse.json({message:"Study material not found"}, { status: 404 });
+      return NextResponse.json({ message: "Study material not found" }, { status: 404 });
     }
 
     // 🔹 Ensure materialLayout has chapters and parse them
@@ -48,15 +48,15 @@ export async function POST(req: Request) {
     };
 
     if (!materialLayout.chapters || !Array.isArray(materialLayout.chapters)) {
-      return  NextResponse.json({message:"No chapters found in study material"}, { status: 400 });
+      return NextResponse.json({ message: "No chapters found in study material" }, { status: 400 });
     }
 
     // Determine how many chapters to process (first two or all chapters if less than two)
     const chaptersToProcess = Math.min(1, materialLayout.chapters.length);
-    
+
     for (let i = 0; i < chaptersToProcess; i++) {
       const chapter = materialLayout.chapters[i];
-      
+
       const prompt = `
 Generate comprehensive study notes for chapter: "${chapter.chapter_name}"
 
@@ -113,12 +113,12 @@ CONTENT SHOULD INCLUDE:
 
 Use clean, properly nested HTML with consistent indentation.
 `;
-      
+
       const chatSession = model.startChat({ history: [] });
       const result = await chatSession.sendMessage(prompt);
       let responseText = result.response.text();
       responseText = responseText.replace(/```json/g, "").replace(/```/g, "");
-      
+
       // Store the generated chapter notes in the database
       await db.studyChapter.create({
         data: {
@@ -142,6 +142,6 @@ Use clean, properly nested HTML with consistent indentation.
     });
   } catch (error) {
     console.error("[Create Initial Study Chapters with AI]", error);
-    return  NextResponse.json({message:"Internal Server Error"}, { status: 500 });
+    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
   }
 }
