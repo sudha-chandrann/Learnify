@@ -13,8 +13,9 @@ import {
 } from "lucide-react";
 import { formatPrice } from "@/lib/format";
 import CourseAttachment from "./_components/CourseAttachment";
-import CourseEnrollButton from "./_components/CourseEnrollementButton";
+// import CourseEnrollButton from "./_components/CourseEnrollementButton";
 import { auth } from "@clerk/nextjs/server";
+import PayPalButton from "./_components/PayPalButton";
 
 async function CourseDetailsPage({
   params,
@@ -61,6 +62,7 @@ async function CourseDetailsPage({
       },
     },
   });
+
 
   const hasPurchased = !!purchase;
 
@@ -180,49 +182,50 @@ async function CourseDetailsPage({
         {/* Right Column - Pricing and Actions */}
         <div className="space-y-6">
           {/* Pricing Card */}
-          {
-            !hasPurchased && (
-                <div className="bg-white rounded-xl shadow-sm p-6 border-t-4 border-sky-500 sticky top-4">
-                <div className="text-center mb-4">
-                  <h3 className="text-2xl font-bold text-gray-900">
-                    {formatPrice(course.price)}
-                  </h3>
-                  <p className="text-gray-500">Full course access</p>
+          {!hasPurchased && (
+            <div className="bg-white rounded-xl shadow-sm p-6 border-t-4 border-sky-500 sticky top-4">
+              <div className="text-center mb-4">
+                <h3 className="text-2xl font-bold text-gray-900">
+                  {formatPrice(course.price)}
+                </h3>
+                <p className="text-gray-500">Full course access</p>
+              </div>
+
+              {/* <CourseEnrollButton price={course.price} courseId={courseId} /> */}
+              <PayPalButton
+                course={course}
+                disabled={false}
+              />
+
+              <div className="space-y-4 text-sm">
+                <div className="flex gap-3 items-start">
+                  <Play className="h-5 w-5 text-sky-500 mt-0.5" />
+                  <div>
+                    <p className="font-medium">Full Access</p>
+                    <p className="text-gray-500">
+                      Access all {totalChapters} chapters
+                    </p>
+                  </div>
                 </div>
-    
-                <CourseEnrollButton price={course.price} courseId={courseId} />
-    
-                <div className="space-y-4 text-sm">
-                  <div className="flex gap-3 items-start">
-                    <Play className="h-5 w-5 text-sky-500 mt-0.5" />
-                    <div>
-                      <p className="font-medium">Full Access</p>
-                      <p className="text-gray-500">
-                        Access all {totalChapters} chapters
-                      </p>
-                    </div>
+                <div className="flex gap-3 items-start">
+                  <Download className="h-5 w-5 text-sky-500 mt-0.5" />
+                  <div>
+                    <p className="font-medium">Resources Included</p>
+                    <p className="text-gray-500">
+                      Download all {course.attachments.length} course materials
+                    </p>
                   </div>
-                  <div className="flex gap-3 items-start">
-                    <Download className="h-5 w-5 text-sky-500 mt-0.5" />
-                    <div>
-                      <p className="font-medium">Resources Included</p>
-                      <p className="text-gray-500">
-                        Download all {course.attachments.length} course materials
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex gap-3 items-start">
-                    <Clock className="h-5 w-5 text-sky-500 mt-0.5" />
-                    <div>
-                      <p className="font-medium">Lifetime Access</p>
-                      <p className="text-gray-500">Learn at your own pace</p>
-                    </div>
+                </div>
+                <div className="flex gap-3 items-start">
+                  <Clock className="h-5 w-5 text-sky-500 mt-0.5" />
+                  <div>
+                    <p className="font-medium">Lifetime Access</p>
+                    <p className="text-gray-500">Learn at your own pace</p>
                   </div>
                 </div>
               </div>
-            )
-          }
-
+            </div>
+          )}
 
           {/* Quick Course Info */}
           <div className="bg-white rounded-xl shadow-sm p-6">

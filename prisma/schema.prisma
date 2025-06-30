@@ -30,6 +30,7 @@ model Course {
   chapters    Chapter[]
   category    Category?    @relation(fields: [categroyId], references: [id])
   purchases   Purchase[]
+  transactions Transaction[]
 
   @@index([categroyId], map: "Course_categroyId_fkey")
 }
@@ -101,12 +102,42 @@ model Purchase {
   updatedAt DateTime @updatedAt
   price     Float
   course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
 
   @@unique([userId, courseId])
   @@index([courseId])
 }
 
+model Transaction {
+  id            String            @id @default(uuid())
+  userId        String
+  courseId      String
+  purchaseId    String
+  paypalOrderId String           @unique
+  amount        Float
+  currency      String           @default("USD")
+  status        TransactionStatus @default(PENDING)
+  payerEmail    String?
+  paypalData    Json?            // Store full PayPal response
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  
+  purchase      Purchase         @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  course        Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
+  @@index([userId])
+  @@index([courseId])
+  @@index([purchaseId])
+  @@index([paypalOrderId])
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+  REFUNDED
+}
 
 model User {
   id             String           @id
