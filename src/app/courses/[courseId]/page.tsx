@@ -193,7 +193,8 @@ async function CourseDetailsPage({
 
               {/* <CourseEnrollButton price={course.price} courseId={courseId} /> */}
               <PayPalButton
-                course={course}
+                courseId={course.id}
+                price={course.price}
                 disabled={false}
               />
 

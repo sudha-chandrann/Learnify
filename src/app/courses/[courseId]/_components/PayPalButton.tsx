@@ -2,22 +2,22 @@
 "use client";
 
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
-import { type Course } from "@prisma/client";
 import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle, XCircle, AlertCircle, Loader2 } from "lucide-react";
 
 interface PayPalButtonProps {
-  course: Course;
+  courseId: string;
+  price:number;
   disabled?: boolean;
 }
 
 type PaymentStatus = 'idle' | 'creating' | 'processing' | 'success' | 'error' | 'cancelled';
 
 export default function PayPalButton({
-  course,
-
+  courseId,
+  price,
   disabled = false,
 }: PayPalButtonProps) {
 
@@ -38,8 +38,8 @@ export default function PayPalButton({
       resetState();
 
       const response = await axios.post("/api/paypal/create-order", {
-        courseId: course.id,
-        amount: course.price,
+        courseId: courseId,
+        amount: price,
       });
 
       if (!response.data?.orderID) {
@@ -77,9 +77,9 @@ export default function PayPalButton({
       }
 
       setStatus('success');
-      setSuccessMessage(`Successfully purchased "${course.title}"!`)
+      setSuccessMessage(`Successfully purchased !`)
       setTimeout(() => {
-        router.push(`/courses/${course.id}/success`);
+        router.push(`/courses/${courseId}/success`);
       }, 2000);
 
     } catch (err) {

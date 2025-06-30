@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// app/api/study-materials/route.ts
 
 import { db } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs/server";
@@ -28,14 +27,12 @@ export async function POST(req: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
     
-    // Extract data from the request body
     const body = await req.json();
     const { topic, difficultyLevel, materialType} = body;
     if (!topic || !difficultyLevel || !materialType) {
       return new NextResponse("Missing required fields", { status: 400 });
     }
 
-    // Generate course structure with AI
     const structurePrompt = `
       Create a comprehensive learning structure for a ${difficultyLevel} level ${materialType} on "${topic}".
       

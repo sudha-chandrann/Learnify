@@ -5,9 +5,9 @@ import React from "react";
 import { getChapter } from "../../../../../../actions/getchapterdata";
 import VideoPlayer from "./_components/VideoPlayer";
 import CourseProgressButton from "./_components/CourseProgressButton";
-import CourseEnrollButton from "../../_components/CourseEnrollementButton";
 import Preview from "@/components/customui/Preview";
 import { AlertTriangle, CheckCircleIcon } from "lucide-react";
+import PayPalButton from "../../_components/PayPalButton";
 
 
 
@@ -90,9 +90,10 @@ async function page({
                 />
               </div>
             ):(
-              <CourseEnrollButton
+              <PayPalButton
               courseId={courseId}
               price={course.price!}
+              disabled={false}
               />
             )
           }
